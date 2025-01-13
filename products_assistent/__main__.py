@@ -1,7 +1,9 @@
 from products_assistent.products import get_products_list
 from products_assistent.choice_alg import get_leaderboard
-
-PRODUCT = "sony wh-1000xm4"
+# sony wh-1000xm4
+# logitech g435
+# playstation 5
+PRODUCT = "steamdeck"
 
 
 def show_data():

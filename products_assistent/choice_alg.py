@@ -50,7 +50,8 @@ def conv_to_stat(products, cor_name):
 
         mark = (product.price - avg_prices) // mn_prices_diff
         name_match_rate = get_name_rate(
-            set(product.name.split()), set(cor_name.split())
+            set(product.name.lower().split()),
+            set(cor_name.lower().split()),
         )
         stats_products.append(
             ProductStats(product=product, name_match_rate=name_match_rate, mark=mark)
@@ -64,7 +65,7 @@ def get_leaderboard(products, cor_name):
         key=lambda prd: (
             -prd.name_match_rate,
             prd.mark,
-            -prd.product.gen_grade,
+            prd.product.gen_grade,
         ),
     )
     return [stats_product.product for stats_product in stats_products]
