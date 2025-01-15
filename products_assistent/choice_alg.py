@@ -5,7 +5,7 @@ import logging
 from products_assistent.products import Product
 
 logger = logging.getLogger(__name__)
-prog = re.compile(r'[^\w\s]')
+prog = re.compile(r"[^\w\s]")
 
 
 @dataclass
@@ -18,7 +18,7 @@ def get_name_rate(name, cor_name):
     counter = 0
     for word in name:
         # https://docs.python.org/3/library/re.html#re.compile
-        new_word = word[:-1] + prog.sub('', word[-1])
+        new_word = word[:-1] + prog.sub("", word[-1])
         if new_word in cor_name:
             counter += 1
     return counter
@@ -51,11 +51,10 @@ def get_leaderboard(products, cor_name):
     stats_products = conv_to_stat(rait_leaderboard_of_10, cor_name)
 
     stats_products.sort(
-        key=lambda prd: (
-            -prd.name_match_rate,
-            prd.product.price
-        ),
+        key=lambda prd: (-prd.name_match_rate, prd.product.price),
     )
 
-    logger.debug([stats_product.name_match_rate for stats_product in stats_products])
+    logger.debug(
+        [stats_product.name_match_rate for stats_product in stats_products]
+    )
     return [stats_product.product for stats_product in stats_products]

@@ -10,6 +10,7 @@ dependencies = [
     "requests>=2.32.3",
 ]
 
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
@@ -17,4 +18,9 @@ build-backend = "hatchling.build"
 [tool.uv]
 dev-dependencies = [
     "logging>=0.4.9.6",
+    "ruff>=0.9.1",
 ]
+
+[tool.ruff]
+line-length = 80
+fix = true

@@ -2,6 +2,7 @@ import requests
 from products_assistent.products import get_products_list
 from products_assistent.choice_alg import get_leaderboard
 import logging
+
 logger = logging.getLogger(__name__)
 
 # sony wh-1000xm4

@@ -2,7 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 from dataclasses import dataclass
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 @dataclass
 class Product:
@@ -99,7 +101,10 @@ def get_product_cards(soup):
 def del_offer_feed_if_there_is(products_html):
     offer_feed = products_html[0].find("div")
 
-    offer_feeds = ("@monetize/IncutConstructor/Premium", "@monetize/PremiumIncut")
+    offer_feeds = (
+        "@monetize/IncutConstructor/Premium",
+        "@monetize/PremiumIncut",
+    )
     if offer_feed.get("data-apiary-widget-name") in offer_feeds:
         return products_html[1:]
 
@@ -109,18 +114,18 @@ def del_offer_feed_if_there_is(products_html):
 def get_products_list(session, product_name, market_name):
     try:
         headers = {
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,'
-                'application/signed-exchange;v=b3;q=0.9',
-            'Accept-Language': 'ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Connection': 'keep-alive',
-            'Host': 'market.yandex.ru',
-            'Sec-Fetch-Dest': 'document',
-            'Sec-Fetch-Mode': 'navigate',
-            'Sec-Fetch-Site': 'none',
-            'Sec-Fetch-User': '?1',
-            'Upgrade-Insecure-Requests': '1',
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) '
-            'Chrome/83.0.4103.61 Safari/537.36',
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,"
+            "application/signed-exchange;v=b3;q=0.9",
+            "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
+            "Connection": "keep-alive",
+            "Host": "market.yandex.ru",
+            "Sec-Fetch-Dest": "document",
+            "Sec-Fetch-Mode": "navigate",
+            "Sec-Fetch-Site": "none",
+            "Sec-Fetch-User": "?1",
+            "Upgrade-Insecure-Requests": "1",
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/83.0.4103.61 Safari/537.36",
         }
         response = session.get(
             f"https://{market_name}/search/",
@@ -141,7 +146,9 @@ def get_products_list(session, product_name, market_name):
     try:
         products_and_offers_html = get_product_cards(soup)
     except UnboundLocalError:
-        logger.error("Тебе нужен аккаунт яндекс маркета, чтобы приложение работало")
+        logger.error(
+            "Тебе нужен аккаунт яндекс маркета, чтобы приложение работало"
+        )
 
     products_html = del_offer_feed_if_there_is(products_and_offers_html)
 
