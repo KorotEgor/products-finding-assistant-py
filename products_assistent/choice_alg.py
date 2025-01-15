@@ -1,7 +1,11 @@
 from dataclasses import dataclass
 import re
+import logging
 
 from products_assistent.products import Product
+
+logger = logging.getLogger(__name__)
+prog = re.compile(r'[^\w\s]')
 
 
 @dataclass
@@ -13,7 +17,8 @@ class ProductStats:
 def get_name_rate(name, cor_name):
     counter = 0
     for word in name:
-        new_word = word[:-1] + re.sub(r'[^\w\s]', '', word[-1])
+        # https://docs.python.org/3/library/re.html#re.compile
+        new_word = word[:-1] + prog.sub('', word[-1])
         if new_word in cor_name:
             counter += 1
     return counter
@@ -32,16 +37,16 @@ def conv_to_stat(products, cor_name):
     return stats_products
 
 
-def get_rait_leaderboard_of_10(products):
+def get_rait_leaderboard_of_10(products, n):
     return sorted(
         products,
         reverse=True,
         key=lambda prd: prd.num_of_grades * prd.avg_grade,
-    )
+    )[:n]
 
 
 def get_leaderboard(products, cor_name):
-    rait_leaderboard_of_10 = get_rait_leaderboard_of_10(products)
+    rait_leaderboard_of_10 = get_rait_leaderboard_of_10(products, 10)
 
     stats_products = conv_to_stat(rait_leaderboard_of_10, cor_name)
 
@@ -51,5 +56,6 @@ def get_leaderboard(products, cor_name):
             prd.product.price
         ),
     )
-    # return [stats_product.product for stats_product in stats_products]
-    return stats_products
+
+    logger.debug([stats_product.name_match_rate for stats_product in stats_products])
+    return [stats_product.product for stats_product in stats_products]
