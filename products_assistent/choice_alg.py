@@ -58,3 +58,4 @@ def get_leaderboard(products, cor_name):
         [stats_product.name_match_rate for stats_product in stats_products]
     )
     return [stats_product.product for stats_product in stats_products]
+
