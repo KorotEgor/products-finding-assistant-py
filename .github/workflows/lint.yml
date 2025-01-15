@@ -13,5 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: unstall uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
       - name: lint
         run: make lint
