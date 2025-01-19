@@ -12,7 +12,6 @@ PRODUCT = "sony wh-1000xm4"
 MARKET_NAME = "market.yandex.ru"
 
 
-# TODO: добавить ruff и GitHub Action
 def show_data(products):
     for product in products:
         logger.info(product)
@@ -27,7 +26,7 @@ def main():
         return
 
     if len(products) == 0:
-        print("Нет сильно отличающихся вариантов")
+        logger.info("Нет сильно отличающихся вариантов")
         return
 
     best_products = get_leaderboard(products, PRODUCT)

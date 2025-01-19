@@ -139,7 +139,6 @@ def get_products_list(session, product_name, market_name):
     if not response.ok:
         logger.error("Плохой код ответа")
         return None
-    # request.ok raise_for_status
 
     soup = BeautifulSoup(response.text, "html.parser")
 

@@ -17,7 +17,6 @@ class ProductStats:
 def get_name_rate(name, cor_name):
     counter = 0
     for word in name:
-        # https://docs.python.org/3/library/re.html#re.compile
         new_word = word[:-1] + prog.sub("", word[-1])
         if new_word in cor_name:
             counter += 1
@@ -58,4 +57,3 @@ def get_leaderboard(products, cor_name):
         [stats_product.name_match_rate for stats_product in stats_products]
     )
     return [stats_product.product for stats_product in stats_products]
-
