@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from products_assistent.db.conn_to_db import DBConnectionMixin
 from products_assistent import products
 
@@ -14,7 +16,8 @@ class RequestsRepo(DBConnectionMixin):
                 request VARCHAR(255) UNIQUE NOT NULL,
                 product_id INTEGER NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                FOREIGN KEY (product_id) REFERENCES products (id) ON DELETE CASCADE
             )
             """)
 
@@ -31,10 +34,43 @@ class RequestsRepo(DBConnectionMixin):
                 (request,),
             )
             product = cur.fetchone()
-        
+
         if product is None:
             return None
 
         updated_at = product[-1]
-        return products.Product(*product[:-1]), updated_at
+        return products.Product(*product[:-1]), datetime.fromisoformat(updated_at)
 
+    def save_request(self, request, product_id):
+        with self.get_connection() as conn:
+            conn.execute(
+                """
+                    INSERT INTO requests (request, product_id)
+                    VALUES (?, ?)
+                """,
+                (
+                    request,
+                    product_id,
+                ),
+            )
+
+    def update_request(self, request):
+        with self.get_connection() as conn:
+            conn.execute(
+                """
+                UPDATE requests SET
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE request = ?
+                """,
+                (request,),
+            )
+    
+    def get_get(self):
+        with self.get_connection() as conn:
+            cur = conn.execute(
+                """
+                SELECT * FROM requests
+            """,
+            )
+            a = cur.fetchall()
+        return a

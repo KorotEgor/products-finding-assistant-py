@@ -1,4 +1,7 @@
-from products_assistent.work_with_db import manage_to_save_product, manage_to_update_product
+from products_assistent.work_with_db import (
+    manage_to_save_to_db,
+    manage_to_update_db,
+)
 
 
 import logging
@@ -52,19 +55,32 @@ def get_changes_text(price_diff, avg_grades_diff, num_of_grades_diff):
         return "Товар был взят из базы данных."
 
 
-def show_data(product, products_repo):
+def show_data(products_repo, requests_repo, product, request):
     repo_product = products_repo.get_product_by_name(product.name)
 
     if repo_product is None:
-        if manage_to_save_product(products_repo, product):
+        if manage_to_save_to_db(
+            products_repo,
+            requests_repo,
+            product,
+            request,
+        ):
             logger.info("Товар добавлен в базу данных: ")
             show_product(product)
             return
         else:
             logger.error("Не удалось сохранить товар")
+            return
 
-    if not manage_to_update_product(products_repo, product):
+    had_updated, err_text = manage_to_update_db(
+        products_repo,
+        requests_repo,
+        product,
+        request,
+    )
+    if not had_updated:
         logger.error("Не удалось обновить товар")
+        logger.error(err_text)
         return
 
     price_diff = product.price - repo_product.price

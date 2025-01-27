@@ -15,7 +15,7 @@ class ProductsRepo(DBConnectionMixin):
                 url VARCHAR(255) NOT NULL,
                 price INTEGER NOT NULL,
                 avg_grade INTEGER NOT NULL,
-                num_of_grades REAL NOT NULL,
+                num_of_grades REAL NOT NULL
             )
             """)
 
@@ -26,7 +26,7 @@ class ProductsRepo(DBConnectionMixin):
         avg_grade = product.avg_grade
         num_of_grades = product.num_of_grades
         with self.get_connection() as conn:
-            conn.execute(
+            cur = conn.execute(
                 """
                     INSERT INTO products (name, url, price, avg_grade, num_of_grades)
                     VALUES (?, ?, ?, ?, ?)
@@ -39,6 +39,9 @@ class ProductsRepo(DBConnectionMixin):
                     num_of_grades,
                 ),
             )
+            id = cur.lastrowid
+
+        return id
 
     def get_product_by_name(self, name):
         with self.get_connection() as conn:
@@ -64,8 +67,7 @@ class ProductsRepo(DBConnectionMixin):
                 UPDATE products SET
                     price = ?,
                     avg_grade = ?,
-                    num_of_grades = ?,
-                    updated_at = CURRENT_TIMESTAMP
+                    num_of_grades = ?
                 WHERE name = ?
                 """,
                 (
