@@ -1,10 +1,14 @@
-from products_assistent.DB.conn_to_db import DBConnectionMixin
+from products_assistent.db.conn_to_db import DBConnectionMixin
+from products_assistent import products
 
-class ProductsTable(DBConnectionMixin):
+
+class ProductsRepo(DBConnectionMixin):
+    def __init__(self, db_path):
+        super().__init__(db_path)
+
     def create_table_products(self):
         with self.get_connection() as conn:
-            cur = conn.cursor()
-            cur.execute("""
+            conn.execute("""
             CREATE TABLE IF NOT EXISTS products (
                 id INTEGER PRIMARY KEY,
                 name VARCHAR(255) UNIQUE NOT NULL,
@@ -12,8 +16,6 @@ class ProductsTable(DBConnectionMixin):
                 price INTEGER NOT NULL,
                 avg_grade INTEGER NOT NULL,
                 num_of_grades REAL NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
             )
             """)
 
@@ -24,19 +26,24 @@ class ProductsTable(DBConnectionMixin):
         avg_grade = product.avg_grade
         num_of_grades = product.num_of_grades
         with self.get_connection() as conn:
-            cur = conn.cursor()
-            cur.execute(
+            conn.execute(
                 """
                     INSERT INTO products (name, url, price, avg_grade, num_of_grades)
                     VALUES (?, ?, ?, ?, ?)
                 """,
-                (name, url, price, avg_grade, num_of_grades,),
+                (
+                    name,
+                    url,
+                    price,
+                    avg_grade,
+                    num_of_grades,
+                ),
             )
 
     def get_product_by_name(self, name):
         with self.get_connection() as conn:
-            cur = conn.cursor()
-            cur.execute("""
+            cur = conn.execute(
+                """
                 SELECT name, url, price, avg_grade, num_of_grades
                 FROM products
                 WHERE name = ?
@@ -45,12 +52,15 @@ class ProductsTable(DBConnectionMixin):
             )
             product = cur.fetchone()
 
-        return product
+        if product is None:
+            return None
+
+        return products.Product(*product)
 
     def update_product(self, name, new_price, new_avg_grade, new_num_of_grades):
         with self.get_connection() as conn:
-            cur = conn.cursor()
-            cur.execute("""
+            conn.execute(
+                """
                 UPDATE products SET
                     price = ?,
                     avg_grade = ?,
@@ -58,5 +68,10 @@ class ProductsTable(DBConnectionMixin):
                     updated_at = CURRENT_TIMESTAMP
                 WHERE name = ?
                 """,
-                (new_price, new_avg_grade, new_num_of_grades, name,)
+                (
+                    new_price,
+                    new_avg_grade,
+                    new_num_of_grades,
+                    name,
+                ),
             )
