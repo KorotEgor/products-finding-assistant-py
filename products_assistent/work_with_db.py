@@ -8,7 +8,7 @@ def manage_to_init_db(products_repo, requests_repo):
     except (DatabaseError, AttributeError) as e:
         return False, e
 
-    return True, ''
+    return True, ""
 
 
 def manage_to_save_to_db(products_repo, requests_repo, product, request):
@@ -33,4 +33,4 @@ def manage_to_update_db(products_repo, requests_repo, product, request):
     except (DatabaseError, AttributeError) as e:
         return False, e
 
-    return True, ''
+    return True, ""

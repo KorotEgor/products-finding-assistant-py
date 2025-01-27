@@ -39,7 +39,9 @@ class RequestsRepo(DBConnectionMixin):
             return None
 
         updated_at = product[-1]
-        return products.Product(*product[:-1]), datetime.fromisoformat(updated_at)
+        return products.Product(*product[:-1]), datetime.fromisoformat(
+            updated_at
+        )
 
     def save_request(self, request, product_id):
         with self.get_connection() as conn:
@@ -64,7 +66,7 @@ class RequestsRepo(DBConnectionMixin):
                 """,
                 (request,),
             )
-    
+
     def get_get(self):
         with self.get_connection() as conn:
             cur = conn.execute(

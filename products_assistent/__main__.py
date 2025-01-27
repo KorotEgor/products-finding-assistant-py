@@ -44,7 +44,7 @@ def main():
         product = product_and_date[0]
         date = product_and_date[1]
         if datetime.today().day == date.day:
-            logger.info('Сегодня это продукт уже искали:')
+            logger.info("Сегодня это продукт уже искали:")
             show_product(product)
             return
 
