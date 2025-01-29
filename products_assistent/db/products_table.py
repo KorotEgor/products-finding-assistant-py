@@ -47,7 +47,7 @@ class ProductsRepo(DBConnectionMixin):
         with self.get_connection() as conn:
             cur = conn.execute(
                 """
-                SELECT name, url, price, avg_grade, num_of_grades
+                SELECT id, name, url, price, avg_grade, num_of_grades
                 FROM products
                 WHERE name = ?
             """,
@@ -58,7 +58,7 @@ class ProductsRepo(DBConnectionMixin):
         if product is None:
             return None
 
-        return products.Product(*product)
+        return product[0], products.Product(*product[1:])
 
     def update_product(self, name, new_price, new_avg_grade, new_num_of_grades):
         with self.get_connection() as conn:

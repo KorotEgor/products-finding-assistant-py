@@ -25,7 +25,7 @@ class RequestsRepo(DBConnectionMixin):
         with self.get_connection() as conn:
             cur = conn.execute(
                 """
-                SELECT prd.name, prd.url, prd.price, prd.avg_grade, prd.num_of_grades, req.updated_at
+                SELECT prd.id, prd.name, prd.url, prd.price, prd.avg_grade, prd.num_of_grades, req.updated_at
                 FROM products AS prd
                 LEFT JOIN requests AS req
                 ON req.product_id = prd.id
@@ -38,9 +38,12 @@ class RequestsRepo(DBConnectionMixin):
         if product is None:
             return None
 
+        product_id = product[0]
         updated_at = product[-1]
-        return products.Product(*product[:-1]), datetime.fromisoformat(
-            updated_at
+        return (
+            product_id,
+            products.Product(*product[1:-1]),
+            datetime.fromisoformat(updated_at),
         )
 
     def save_request(self, request, product_id):
