@@ -5,12 +5,13 @@ from datetime import datetime
 
 from products_assistent.products import get_products_list
 from products_assistent.choice_alg import get_leaderboard
-from products_assistent.show_data import show_data, show_product
-from products_assistent.utils import get_avg_and_diff_price
-from products_assistent.work_with_db import manage_to_init_db
+from products_assistent import show_data
+from products_assistent.db.work_with_db import (
+    manage_to_init_db,
+    manage_to_save_to_db,
+)
 from products_assistent.db import products_table
 from products_assistent.db import requests_table
-from products_assistent.db import prd_price_change_table
 
 
 logger = logging.getLogger(__name__)
@@ -18,9 +19,6 @@ products_repo = products_table.ProductsRepo(
     Path("db") / "products_assistent.db"
 )
 requests_repo = requests_table.RequestsRepo(
-    Path("db") / "products_assistent.db"
-)
-prd_prices_repo = prd_price_change_table.PoductsrdPricesRepo(
     Path("db") / "products_assistent.db"
 )
 
@@ -35,28 +33,23 @@ MARKET_NAME = "market.yandex.ru"
 def main():
     logging.basicConfig(level=logging.DEBUG)
 
-    had_connected, err_text = manage_to_init_db(
+    err_text = manage_to_init_db(
         products_repo,
         requests_repo,
-        prd_prices_repo,
     )
-    if not had_connected:
+    if err_text is not None:
         logger.error("Ошибка в базе данных:")
         logger.error(err_text)
         return
 
-    product_and_date = requests_repo.get_product_and_date_by_req(PRODUCT)
-    if product_and_date is not None:
-        prd_id = product_and_date[0]
-        product = product_and_date[1]
-        date = product_and_date[-1]
-        if datetime.today().day == date.day:
+    dbproduct = products_repo.get_dbproduct_by_req(PRODUCT)
+    if dbproduct is not None:
+        if datetime.today().day == dbproduct.date.day:
             logger.info("Сегодня это продукт уже искали:")
-            avg_price, diff_price = get_avg_and_diff_price(
-                prd_prices_repo,
-                prd_id,
+            diff_price, avg_price = products_repo.get_diff_avg_price_by_prd_id(
+                dbproduct.id,
             )
-            show_product(avg_price, diff_price, product)
+            show_data.show_product(diff_price, avg_price, dbproduct)
             return
 
     with requests.Session() as s:
@@ -71,9 +64,25 @@ def main():
 
     best_products = get_leaderboard(products)
 
-    show_data(
-        products_repo, requests_repo, prd_prices_repo, best_products[0], PRODUCT
+    prd_id = manage_to_save_to_db(
+        products_repo,
+        requests_repo,
+        best_products[0],
+        PRODUCT,
     )
+
+    if prd_id is not None:
+        logger.info("Товар добавлен в базу данных: ")
+        diff_price, avg_price = products_repo.get_diff_avg_price_by_prd_id(
+            prd_id,
+        )
+        show_data.show_product(
+            diff_price,
+            avg_price,
+            best_products[0],
+        )
+    else:
+        logger.error("Не удалось сохранить товар")
 
 
 if __name__ == "__main__":

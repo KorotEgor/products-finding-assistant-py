@@ -1,5 +1,15 @@
+from datetime import datetime
+
 from products_assistent.db.conn_to_db import DBConnectionMixin
 from products_assistent import products
+
+from dataclasses import dataclass
+
+
+@dataclass
+class DBProduct(products.Product):
+    id: int
+    date: datetime
 
 
 class ProductsRepo(DBConnectionMixin):
@@ -11,15 +21,18 @@ class ProductsRepo(DBConnectionMixin):
             conn.execute("""
             CREATE TABLE IF NOT EXISTS products (
                 id INTEGER PRIMARY KEY,
+                request_id INTEGER NOT NULL,
                 name VARCHAR(255) UNIQUE NOT NULL,
                 url VARCHAR(255) NOT NULL,
                 price INTEGER NOT NULL,
-                avg_grade INTEGER NOT NULL,
-                num_of_grades REAL NOT NULL
+                avg_grade REAL NOT NULL,
+                num_of_grades INTEGER NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                FOREIGN KEY (request_id) REFERENCES requests (id) ON DELETE CASCADE
             )
             """)
 
-    def save_product(self, product):
+    def save_product(self, req_id, product):
         name = product.name
         url = product.url
         price = product.price
@@ -28,10 +41,11 @@ class ProductsRepo(DBConnectionMixin):
         with self.get_connection() as conn:
             cur = conn.execute(
                 """
-                    INSERT INTO products (name, url, price, avg_grade, num_of_grades)
-                    VALUES (?, ?, ?, ?, ?)
+                    INSERT INTO products (request_id, name, url, price, avg_grade, num_of_grades)
+                    VALUES (?, ?, ?, ?, ?, ?)
                 """,
                 (
+                    req_id,
                     name,
                     url,
                     price,
@@ -43,37 +57,35 @@ class ProductsRepo(DBConnectionMixin):
 
         return id
 
-    def get_product_by_name(self, name):
+    def get_dbproduct_by_req(self, req):
         with self.get_connection() as conn:
             cur = conn.execute(
                 """
-                SELECT id, name, url, price, avg_grade, num_of_grades
-                FROM products
-                WHERE name = ?
+                SELECT prd.name, prd.url, prd.price, prd.avg_grade, prd.num_of_grades, prd.id, prd.created_at
+                FROM products AS prd
+                LEFT JOIN requests AS req
+                ON req.id = prd.request_id
+                WHERE req.request = ?
             """,
-                (name,),
+                (req,),
             )
             product = cur.fetchone()
 
         if product is None:
             return None
 
-        return product[0], products.Product(*product[1:])
+        return DBProduct(*product[:-1], datetime.fromisoformat(product[-1]))
 
-    def update_product(self, name, new_price, new_avg_grade, new_num_of_grades):
+    def get_diff_avg_price_by_prd_id(self, prd_id):
         with self.get_connection() as conn:
-            conn.execute(
+            cur = conn.execute(
                 """
-                UPDATE products SET
-                    price = ?,
-                    avg_grade = ?,
-                    num_of_grades = ?
-                WHERE name = ?
-                """,
-                (
-                    new_price,
-                    new_avg_grade,
-                    new_num_of_grades,
-                    name,
-                ),
+                        SELECT MIN(price), MAX(price), AVG(price)
+                        FROM products
+                        WHERE id = ?
+                    """,
+                (prd_id,),
             )
+            min_price, max_price, avg_price = cur.fetchone()
+
+        return max_price - min_price, avg_price
