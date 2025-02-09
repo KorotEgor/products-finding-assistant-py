@@ -15,7 +15,7 @@ def manage_to_save_to_db(products_repo, reqs_repo, product, req):
     try:
         req_id = reqs_repo.save_request(req)
         prd_id = products_repo.save_product(req_id, product)
-    except (DatabaseError, AttributeError):
-        return None
+    except (DatabaseError, AttributeError) as err:
+        return err
 
     return prd_id

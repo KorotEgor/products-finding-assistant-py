@@ -56,6 +56,7 @@ def main():
         products = get_products_list(s, PRODUCT, MARKET_NAME)
 
     if products is None:
+        logger.info("Нет похожих товаров в интернете")
         return
 
     if len(products) == 0:
@@ -71,7 +72,7 @@ def main():
         PRODUCT,
     )
 
-    if prd_id is not None:
+    if not isinstance(prd_id, Exception):
         logger.info("Товар добавлен в базу данных: ")
         diff_price, avg_price = products_repo.get_diff_avg_price_by_prd_id(
             prd_id,
@@ -82,7 +83,7 @@ def main():
             best_products[0],
         )
     else:
-        logger.error("Не удалось сохранить товар")
+        logger.error("Не удалось сохранить товар %s", prd_id)
 
 
 if __name__ == "__main__":

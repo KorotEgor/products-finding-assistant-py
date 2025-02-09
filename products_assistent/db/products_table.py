@@ -22,7 +22,7 @@ class ProductsRepo(DBConnectionMixin):
             CREATE TABLE IF NOT EXISTS products (
                 id INTEGER PRIMARY KEY,
                 request_id INTEGER NOT NULL,
-                name VARCHAR(255) UNIQUE NOT NULL,
+                name VARCHAR(255) NOT NULL,
                 url VARCHAR(255) NOT NULL,
                 price INTEGER NOT NULL,
                 avg_grade REAL NOT NULL,

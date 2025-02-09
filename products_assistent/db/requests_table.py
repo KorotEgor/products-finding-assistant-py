@@ -18,6 +18,17 @@ class RequestsRepo(DBConnectionMixin):
         with self.get_connection() as conn:
             cur = conn.execute(
                 """
+                    SELECT id FROM requests
+                    WHERE request = ?
+                """,
+                (request,),
+            )
+            id = cur.fetchone()
+            if id is not None:
+                return id[0]
+
+            cur = conn.execute(
+                """
                     INSERT INTO requests (request)
                     VALUES (?)
                 """,
