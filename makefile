@@ -7,6 +7,10 @@ run:
 dev:
 	uv run flask --app products_assistent run --debug
 
+# запускает созданную команду инициализации
+init_db:
+	uv run flask --app products_assistent init-db
+
 lint:
 	uv run ruff format products_assistent && uv run ruff check products_assistent
 

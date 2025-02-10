@@ -1,0 +1,19 @@
+DROP TABLE IF EXISTS requests;
+DROP TABLE IF EXISTS products;
+
+CREATE TABLE requests (
+    id INTEGER PRIMARY KEY,
+    request VARCHAR(255) UNIQUE NOT NULL
+);
+
+CREATE TABLE products (
+    id INTEGER PRIMARY KEY,
+    request_id INTEGER NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    url VARCHAR(255) NOT NULL,
+    price INTEGER NOT NULL,
+    avg_grade REAL NOT NULL,
+    num_of_grades INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    FOREIGN KEY (request_id) REFERENCES requests (id) ON DELETE CASCADE
+);

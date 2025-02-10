@@ -29,4 +29,7 @@ def create_app():
     def hello():
         return 'Hello, World!'
 
+    from products_assistent.db import conn_to_db
+    conn_to_db.init_app(app)
+
     return app

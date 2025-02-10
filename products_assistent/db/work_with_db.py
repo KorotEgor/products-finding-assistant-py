@@ -1,21 +1,17 @@
-from sqlite3 import DatabaseError
+import logging
 
-
-def manage_to_init_db(products_repo, reqs_repo):
-    try:
-        reqs_repo.create_table_requests()
-        products_repo.create_table_products()
-    except (DatabaseError, AttributeError) as e:
-        return e
-
-    return None
+logger = logging.getLogger(__name__)
 
 
 def manage_to_save_to_db(products_repo, reqs_repo, product, req):
-    try:
-        req_id = reqs_repo.save_request(req)
-        prd_id = products_repo.save_product(req_id, product)
-    except (DatabaseError, AttributeError) as err:
-        return err
+    req_id = reqs_repo.save_request(req)
+    if isinstance(req_id, Exception):
+            logger.error("Ошибка при сохранении в базу requests: %s", req_id)
+            return None
+
+    prd_id = products_repo.save_product(req_id, product)
+    if isinstance(req_id, Exception):
+            logger.error("Ошибка при сохранении в базу products: %s", prd_id)
+            return None
 
     return prd_id

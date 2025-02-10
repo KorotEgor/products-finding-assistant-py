@@ -1,22 +1,13 @@
-from products_assistent.db.conn_to_db import DBConnectionMixin
+from sqlite3 import DatabaseError
 
 
-class RequestsRepo(DBConnectionMixin):
-    def __init__(self, db_path):
-        super().__init__(db_path)
-
-    def create_table_requests(self):
-        with self.get_connection() as conn:
-            conn.execute("""
-            CREATE TABLE IF NOT EXISTS requests (
-                id INTEGER PRIMARY KEY,
-                request VARCHAR(255) UNIQUE NOT NULL
-            )
-            """)
+class RequestsRepo:
+    def __init__(self, db):
+        self.db = db
 
     def save_request(self, request):
-        with self.get_connection() as conn:
-            cur = conn.execute(
+        try:
+            cur = self.db.execute(
                 """
                     SELECT id FROM requests
                     WHERE request = ?
@@ -27,7 +18,7 @@ class RequestsRepo(DBConnectionMixin):
             if id is not None:
                 return id[0]
 
-            cur = conn.execute(
+            cur = self.db.execute(
                 """
                     INSERT INTO requests (request)
                     VALUES (?)
@@ -35,5 +26,7 @@ class RequestsRepo(DBConnectionMixin):
                 (request,),
             )
             id = cur.lastrowid
+        except DatabaseError as err:
+            return err
 
         return id
