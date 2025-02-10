@@ -1,5 +1,5 @@
 import logging
-from products_assistent.config import PRODUCT_COUNT
+from products_assistent.config_count import PRODUCT_COUNT
 
 logger = logging.getLogger(__name__)
 
