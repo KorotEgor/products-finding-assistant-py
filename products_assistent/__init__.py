@@ -1,7 +1,9 @@
 import os
-
+import logging
 from flask import Flask
 from dotenv import load_dotenv
+
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 

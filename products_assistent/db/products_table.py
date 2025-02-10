@@ -37,6 +37,7 @@ class ProductsRepo:
                 ),
             )
             id = cur.lastrowid
+            self.db.commit()
         except DatabaseError as err:
             return err
 
