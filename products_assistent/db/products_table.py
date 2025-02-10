@@ -61,11 +61,13 @@ class ProductsRepo(DBConnectionMixin):
         with self.get_connection() as conn:
             cur = conn.execute(
                 """
-                SELECT prd.name, prd.url, prd.price, prd.avg_grade, prd.num_of_grades, prd.id, prd.created_at
+                SELECT prd.name, prd.url, prd.price, prd.avg_grade, prd.num_of_grades, prd.id, prd.created_at as date
                 FROM products AS prd
                 LEFT JOIN requests AS req
                 ON req.id = prd.request_id
                 WHERE req.request = ?
+                ORDER BY date desc
+                LIMIT 1
             """,
                 (req,),
             )
