@@ -34,4 +34,7 @@ def create_app():
     from products_assistent.db import conn_to_db
     conn_to_db.init_app(app)
 
+    from products_assistent.app import bp
+    app.register_blueprint(bp)
+
     return app

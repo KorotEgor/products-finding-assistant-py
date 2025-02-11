@@ -36,7 +36,6 @@ def init_db():
 @click.command('init-db')
 def init_db_command():
     init_db()
-    # мб заменить на логер?
     click.echo('Initialized the database.')
 
 

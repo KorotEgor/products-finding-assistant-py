@@ -1,6 +1,7 @@
 import requests
 import logging
 from datetime import datetime
+from flask import Blueprint, render_template
 
 from products_assistent.products import get_products_list
 from products_assistent.choice_alg import get_leaderboard
@@ -10,12 +11,11 @@ from products_assistent.db.work_with_db import (
 )
 from products_assistent.db import products_table
 from products_assistent.db import requests_table
+from products_assistent.db import conn_to_db
 
 
 logger = logging.getLogger(__name__)
-products_repo = products_table.ProductsRepo()
-requests_repo = requests_table.RequestsRepo()
-
+bp = Blueprint("main", __name__)
 
 # sony wh-1000xm4
 # logitech g435
@@ -24,8 +24,13 @@ PRODUCT = "sony wh-1000xm4"
 MARKET_NAME = "market.yandex.ru"
 
 
+@bp.route("/")
 def main():
     logging.basicConfig(level=logging.DEBUG)
+
+    db = conn_to_db.get_db()
+    products_repo = products_table.ProductsRepo(db)
+    requests_repo = requests_table.RequestsRepo(db)
 
     dbproduct = products_repo.get_dbproduct_by_req(PRODUCT)
     if dbproduct is not None:
@@ -35,18 +40,29 @@ def main():
                 dbproduct.id,
             )
             show_data.show_product(diff_price, avg_price, dbproduct)
-            return
+            return render_template(
+                "test.html",
+                product=dbproduct,
+                diff_price=diff_price,
+                avg_price=avg_price,
+            )
 
     with requests.Session() as s:
         products = get_products_list(s, PRODUCT, MARKET_NAME)
 
     if products is None:
         logger.info("Нет похожих товаров в интернете")
-        return
+        return render_template(
+            "test.html",
+            product='',
+        )
 
     if len(products) == 0:
         logger.info("Нет сильно отличающихся вариантов")
-        return
+        return render_template(
+            "test.html",
+            product='',
+        )
 
     best_products = get_leaderboard(products)
 
@@ -58,7 +74,10 @@ def main():
     )
 
     if prd_id is None:
-        return
+        return render_template(
+            "test.html",
+            product='',
+        )
 
     logger.info("Товар добавлен в базу данных: ")
     diff_price, avg_price = products_repo.get_diff_avg_price_by_prd_id(
@@ -68,6 +87,12 @@ def main():
         diff_price,
         avg_price,
         best_products[0],
+    )
+    return render_template(
+        "test.html",
+        product=best_products[0],
+        diff_price=diff_price,
+        avg_price=avg_price,
     )
 
 
