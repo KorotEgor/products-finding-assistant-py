@@ -35,6 +35,9 @@ def get_product_data(product_req, products_repo, requests_repo):
     with requests.Session() as s:
         products = get_products_list(s, product_req, MARKET_NAME)
 
+    if isinstance(products, Exception):
+        return "Не корректный запрос", "", ""
+
     if products is None:
         logger.info("Нет похожих товаров в интернете")
         return "Нет похожих товаров в интернете", "", ""
@@ -53,7 +56,7 @@ def get_product_data(product_req, products_repo, requests_repo):
     )
 
     if prd_id is None:
-        return "ОШИБКА", "", ""
+        return "Не удалось найти товар", "", ""
 
     logger.info("Товар добавлен в базу данных: ")
     diff_price, avg_price = products_repo.get_diff_avg_price_by_prd_id(

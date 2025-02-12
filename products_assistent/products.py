@@ -144,10 +144,9 @@ def get_products_list(session, product_name, market_name):
 
     try:
         products_and_offers_html = get_product_cards(soup)
-    except UnboundLocalError:
-        logger.error(
-            "Тебе нужен аккаунт яндекс маркета, чтобы приложение работало"
-        )
+    except (UnboundLocalError, AttributeError) as err:
+        logger.error("Ошибка при получении товара")
+        return err
 
     products_html = del_offer_feed_if_there_is(products_and_offers_html)
 
