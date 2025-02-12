@@ -7,6 +7,7 @@ logger = logging.getLogger(__name__)
 
 load_dotenv()
 
+
 # для тестов как параметр
 # test_config=None
 def create_app():
@@ -14,7 +15,7 @@ def create_app():
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY=os.getenv("DEV_KEY"),
-        DATABASE=os.path.join(app.instance_path, 'products_assistent.sqlite'),
+        DATABASE=os.path.join(app.instance_path, "products_assistent.sqlite"),
     )
 
     # для тестов
@@ -27,14 +28,16 @@ def create_app():
     except OSError:
         pass
 
-    @app.route('/hello')
+    @app.route("/hello")
     def hello():
-        return 'Hello, World!'
+        return "Hello, World!"
 
     from products_assistent.db import conn_to_db
+
     conn_to_db.init_app(app)
 
     from products_assistent.app import bp
+
     app.register_blueprint(bp)
 
     return app

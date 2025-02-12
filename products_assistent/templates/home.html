@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}home{% endblock %}
+{% block content %}
+<div class="container-lg mt-3">
+  <div class="row">
+    <div class="col-12 col-md-10 col-lg-8 mx-auto border rounded-3 bg-light p-5">
+      <h1 class="display-3">Продуктовый ассистент</h1>
+      <p class="lead">Ищите лучшую вариацию товара в один клик</p>
+      <form method="post" class="d-flex justify-content-center">
+        <label for="text" class="visually-hidden">Продукт для поиска</label>
+        <input type="text" name="product_req" placeholder="введите продукт" value="" class="form-control form-control-lg" required>
+        <input type="submit" class="btn btn-primary  btn-lg ms-3 px-5 text-uppercase mx-3" value="Найти">
+      </form>
+    </div>
+  </div>
+</div>
+<div style="width: 200px;">
+  <div style="height: 100px; margin: 10px;"></div>
+</div>
+{% if product != 'first' %}
+  {% if diff_price != '' %}
+  <div class="container-lg mt-3 ">
+    <h1 class="display-3">Результат поиска</h1>
+  </div>
+  <div class="container-lg mt-3 ">
+    <table class="table table-bordered text-nowrap">
+      <thead>
+        <tr>
+          <th scope="col ">Магазин</th>
+          <th scope="col">Название</th>
+          <th scope="col">Цена</th>
+          <th scope="col">Средняя оценка</th>
+          <th scope="col">Количество оценок</th>
+          <th scope="col">Изменение цены за все время</th>
+          <th scope="col">Средняя цена за все время</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Yandex</th>
+          <td><a href="{{ product.url }}">{{ product.name }}</a></td>
+          <td>{{ product.price }}</td>
+          <td>{{ product.avg_grade }}</td>
+          <td>{{ product.num_of_grades }}</td>
+          <td>{{ diff_price }}</td>
+          <td>{{ avg_price }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="container-lg mt-3 ">
+    <h4>{{ product }}</h4>
+  </div>
+  {% endif %}
+{% endif %}
+{% endblock %}
