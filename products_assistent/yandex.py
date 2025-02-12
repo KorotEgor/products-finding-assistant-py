@@ -30,21 +30,39 @@ def get_product_data(product_req, products_repo, requests_repo):
                 dbproduct.id,
             )
             show_data.show_product(diff_price, avg_price, dbproduct)
-            return dbproduct, diff_price, avg_price
+            return (
+                "Продукт удачно найден",
+                "alert alert-success",
+                dbproduct,
+                diff_price,
+                avg_price,
+            )
 
     with requests.Session() as s:
         products = get_products_list(s, product_req, MARKET_NAME)
 
     if isinstance(products, Exception):
-        return "Не корректный запрос", "", ""
+        return "Не корректный запрос", "alert alert-danger", "", "", ""
 
     if products is None:
         logger.info("Нет похожих товаров в интернете")
-        return "Нет похожих товаров в интернете", "", ""
+        return (
+            "Нет похожих товаров в интернете",
+            "alert alert-danger",
+            "",
+            "",
+            "",
+        )
 
     if len(products) == 0:
         logger.info("Нет сильно отличающихся вариантов")
-        return "Нет сильно отличающихся вариантов", "", ""
+        return (
+            "Нет сильно отличающихся вариантов",
+            "alert alert-danger",
+            "",
+            "",
+            "",
+        )
 
     best_products = get_leaderboard(products)
 
@@ -56,7 +74,7 @@ def get_product_data(product_req, products_repo, requests_repo):
     )
 
     if prd_id is None:
-        return "Не удалось найти товар", "", ""
+        return "Не удалось найти товар", "alert alert-danger", "", "", ""
 
     logger.info("Товар добавлен в базу данных: ")
     diff_price, avg_price = products_repo.get_diff_avg_price_by_prd_id(
@@ -67,4 +85,10 @@ def get_product_data(product_req, products_repo, requests_repo):
         avg_price,
         best_products[0],
     )
-    return best_products[0], diff_price, avg_price
+    return (
+        "Продукт удачно найден",
+        "alert alert-success",
+        best_products[0],
+        diff_price,
+        avg_price,
+    )
