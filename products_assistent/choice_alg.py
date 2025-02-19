@@ -1,20 +1,15 @@
-import logging
-from products_assistent.config import PRODUCT_COUNT
-
-logger = logging.getLogger(__name__)
-
-
-def get_some_first_products(products, products_count):
-    return products[:products_count]
-
-
-def get_leaderboard(products):
-    best_products = get_some_first_products(products, PRODUCT_COUNT)
-
+def get_sorted_products(products):
     return sorted(
-        best_products,
+        products,
         key=lambda prd: (
             prd.price,
-            prd.avg_grade * prd.num_of_grades,
+            -(prd.avg_grade * prd.num_of_grades),
+            prd.name,
         ),
     )
+
+
+def get_leaderboard(products, product_count):
+    sorted_products = get_sorted_products(products)
+
+    return sorted_products[:product_count]

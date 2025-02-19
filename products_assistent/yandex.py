@@ -2,7 +2,7 @@ import requests
 import logging
 from datetime import datetime
 
-
+from products_assistent.config import PRODUCT_COUNT
 from products_assistent.products import get_products_list
 from products_assistent.choice_alg import get_leaderboard
 from products_assistent import show_data
@@ -64,7 +64,7 @@ def get_product_data(product_req, products_repo, requests_repo):
             "",
         )
 
-    best_products = get_leaderboard(products)
+    best_products = get_leaderboard(products, PRODUCT_COUNT)
 
     prd_id = manage_to_save_to_db(
         products_repo,

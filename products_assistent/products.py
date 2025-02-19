@@ -111,7 +111,7 @@ def del_offer_feed_if_there_is(products_html):
     return products_html
 
 
-def get_products_list(session, product_name, market_name):
+def get_html_file(session, product_name, market_name):
     try:
         headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,"
@@ -140,7 +140,13 @@ def get_products_list(session, product_name, market_name):
         logger.error("Плохой код ответа")
         return None
 
-    soup = BeautifulSoup(response.text, "html.parser")
+    return BeautifulSoup(response.text, "html.parser")
+
+
+def get_products_list(
+    session, product_name, market_name, get_html=get_html_file
+):
+    soup = get_html(session, product_name, market_name)
 
     try:
         products_and_offers_html = get_product_cards(soup)

@@ -16,3 +16,6 @@ lint:
 
 commit_lint:
 	uv run ruff format products_assistent --check && uv run ruff check products_assistent --exit-non-zero-on-fix
+
+test:
+	uv run pytest
