@@ -5,6 +5,7 @@ from products_assistent.products import (
     get_product_cards,
     del_offer_feed_if_there_is,
     get_divs_with_data,
+    get_name_and_rating,
 )
 
 
@@ -94,6 +95,24 @@ def test_get_divs_with_data(divs_with_data_soup):
 
     err_text = "возващает даже, если class=@marketfront/EmptyIncut"
     assert len(get_divs_with_data(class_test)) == 1, err_text
+
+
+@pytest.fixture
+def name_and_rating_soup():
+    with open("tests/fixtures/yandex/name_and_rating.html", "r") as f:
+        soup = BeautifulSoup(f, "html.parser")
+
+    return (0, soup)
+
+
+def test_get_name_and_rating(name_and_rating_soup):
+    raiting, name = get_name_and_rating(name_and_rating_soup)
+
+    err_text = "неверное имя"
+    assert name == "right", err_text
+
+    err_text = "неверный рейтинг"
+    assert raiting.string == "right", err_text
 
 
 def fake_get_html_file(session, product_name, market_name):
