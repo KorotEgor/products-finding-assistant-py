@@ -6,6 +6,8 @@ from products_assistent.products import (
     del_offer_feed_if_there_is,
     get_divs_with_data,
     get_name_and_rating,
+    get_rating_divs,
+    get_grades,
 )
 
 
@@ -113,6 +115,39 @@ def test_get_name_and_rating(name_and_rating_soup):
 
     err_text = "неверный рейтинг"
     assert raiting.string == "right", err_text
+
+
+@pytest.fixture
+def rating_divs_soup():
+    with open("tests/fixtures/yandex/rating_divs.html", "r") as f:
+        soup = BeautifulSoup(f, "html.parser")
+
+    return soup
+
+
+def test_get_rating_divs(rating_divs_soup):
+    raiting = get_rating_divs(rating_divs_soup)
+
+    err_text = "неверно находит рейтинг"
+    assert len(raiting) == 2, err_text
+
+
+@pytest.fixture
+def grades_soup():
+    with open("tests/fixtures/yandex/grades.html", "r") as f:
+        soup = BeautifulSoup(f, "html.parser")
+
+    return (0, *soup.find_all("span"))
+
+
+def test_get_grades(grades_soup):
+    grades = get_grades(grades_soup)
+
+    err_text = "не тот тип данных"
+    assert isinstance(grades, int), err_text
+
+    err_text = "не верный получение оценок"
+    assert grades == 1, err_text
 
 
 def fake_get_html_file(session, product_name, market_name):

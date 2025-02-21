@@ -19,3 +19,5 @@ commit_lint:
 
 test:
 	uv run pytest
+
+for_commit: lint test
