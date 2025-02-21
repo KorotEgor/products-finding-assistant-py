@@ -143,10 +143,8 @@ def get_html_file(session, product_name, market_name):
     return BeautifulSoup(response.text, "html.parser")
 
 
-def get_products_list(
-    session, product_name, market_name, get_html=get_html_file
-):
-    soup = get_html(session, product_name, market_name)
+def get_products_list(session, product_name, market_name):
+    soup = get_html_file(session, product_name, market_name)
 
     try:
         products_and_offers_html = get_product_cards(soup)

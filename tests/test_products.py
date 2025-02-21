@@ -202,11 +202,3 @@ def test_get_url(url_soup):
 
     err_text = "не верный url"
     assert url == "https://right.right", err_text
-
-
-def fake_get_html_file(session, product_name, market_name):
-    pass
-
-
-def test_get_products_list():
-    pass
