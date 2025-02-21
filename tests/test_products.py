@@ -8,6 +8,7 @@ from products_assistent.products import (
     get_name_and_rating,
     get_rating_divs,
     get_grades,
+    get_avg_grades,
 )
 
 
@@ -137,7 +138,7 @@ def grades_soup():
     with open("tests/fixtures/yandex/grades.html", "r") as f:
         soup = BeautifulSoup(f, "html.parser")
 
-    return (0, *soup.find_all("span"))
+    return ("0", *soup.find_all("span"))
 
 
 def test_get_grades(grades_soup):
@@ -146,8 +147,26 @@ def test_get_grades(grades_soup):
     err_text = "не тот тип данных"
     assert isinstance(grades, int), err_text
 
-    err_text = "не верный получение оценок"
+    err_text = "не верное получение оценок"
     assert grades == 1, err_text
+
+
+@pytest.fixture
+def avg_grades_soup():
+    with open("tests/fixtures/yandex/avg_grades.html", "r") as f:
+        soup = BeautifulSoup(f, "html.parser")
+
+    return (*soup.find_all("span"), "0")
+
+
+def test_get_avg_grades(avg_grades_soup):
+    avg_grades = get_avg_grades(avg_grades_soup)
+
+    err_text = "не тот тип данных"
+    assert isinstance(avg_grades, float), err_text
+
+    err_text = "не верное получение средних оценок"
+    assert avg_grades == 1.0, err_text
 
 
 def fake_get_html_file(session, product_name, market_name):
