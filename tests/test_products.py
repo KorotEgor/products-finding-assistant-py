@@ -9,6 +9,7 @@ from products_assistent.products import (
     get_rating_divs,
     get_grades,
     get_avg_grades,
+    get_price,
 )
 
 
@@ -167,6 +168,24 @@ def test_get_avg_grades(avg_grades_soup):
 
     err_text = "не верное получение средних оценок"
     assert avg_grades == 1.0, err_text
+
+
+@pytest.fixture
+def get_price_soup():
+    with open("tests/fixtures/yandex/price.html", "r") as f:
+        soup = BeautifulSoup(f, "html.parser")
+
+    return ("0", "0", soup)
+
+
+def test_get_price(get_price_soup):
+    price = get_price(get_price_soup)
+
+    err_text = "не тот тип данных"
+    assert isinstance(price, int), err_text
+
+    err_text = "не верное получение цены"
+    assert price == 1234, err_text
 
 
 def fake_get_html_file(session, product_name, market_name):
