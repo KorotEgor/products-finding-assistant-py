@@ -9,7 +9,8 @@ def get_db():
     # получаем db из окружения flask
     if "db" not in g:
         g.db = sqlite3.connect(
-            current_app.config["DATABASE"], detect_types=sqlite3.PARSE_DECLTYPES
+            current_app.config["DATABASE"],
+            detect_types=sqlite3.PARSE_DECLTYPES,
         )
 
     return g.db

@@ -1,5 +1,6 @@
 import pytest
 from bs4 import BeautifulSoup
+from regex import R
 
 from products_assistent.products import (
     get_product_cards,
@@ -15,25 +16,20 @@ from products_assistent.products import (
 
 
 @pytest.fixture
-def prd_cards_soup_err():
+def prd_cards_soup():
     with open("tests/fixtures/yandex/prd_cards_err.html", "r") as f:
         soup = BeautifulSoup(f, "html.parser")
 
-    return soup
+    return soup, soup.find("div", class_="bad")
 
 
-def test_get_prd_cards_err(prd_cards_soup_err):
-    pass_test = False
-    soup = prd_cards_soup_err
+def test_get_prd_cards_err(prd_cards_soup):
+    right_test, err_test = get_product_cards(prd_cards_soup[0]), prd_cards_soup[1]
+    err_text = "не возващает правильный результат"
+    assert len(right_test) == 2, err_text
 
-    try:
-        get_product_cards(soup)
-    except (UnboundLocalError, AttributeError):
-        pass_test = True
-    finally:
-        if not pass_test:
-            err_text = "не выбрасывает ошибку при отсутствии карт"
-        assert pass_test, err_text
+    with pytest.raises((UnboundLocalError, AttributeError)):
+        get_product_cards(err_test)
 
 
 @pytest.fixture
@@ -53,14 +49,8 @@ def test_del_offer_feed(del_offer_soup):
         second_offer_class_test,
     ) = del_offer_soup
 
-    try:
-        first_test = del_offer_feed_if_there_is([first_offer_test])
-    except IndexError:
-        err_text = "берет не первых эллемент"
-        assert True, err_text
-
     err_text = "не удаляет с атрибутом: @monetize/IncutConstructor/Premium"
-    assert len(first_test) == 0, err_text
+    assert len(del_offer_feed_if_there_is([first_offer_test])) == 0, err_text
 
     err_text = "не удаляет с атрибутом: @monetize/PremiumIncut"
     assert len(del_offer_feed_if_there_is([second_offer_test])) == 0, err_text

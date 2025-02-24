@@ -20,6 +20,7 @@ build-backend = "hatchling.build"
 [tool.uv]
 dev-dependencies = [
     "logging>=0.4.9.6",
+    "pytest-cov>=6.0.0",
     "pytest>=8.3.4",
     "ruff>=0.9.1",
 ]
@@ -27,3 +28,13 @@ dev-dependencies = [
 [tool.ruff]
 line-length = 80
 fix = true
+
+[tool.pytest.ini_options]
+addopts = "--cov-report=term-missing --setup-show --verbose"
+
+[tool.coverage.run]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = ["if __name__ == .__main__.:"]
+omit = ["*/tests/*"]
