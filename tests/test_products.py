@@ -1,6 +1,5 @@
 import pytest
 from bs4 import BeautifulSoup
-from regex import R
 
 from products_assistent.products import (
     get_product_cards,
@@ -13,18 +12,22 @@ from products_assistent.products import (
     get_price,
     get_url,
 )
+from products_assistent.products import NoneProduct
 
 
 @pytest.fixture
 def prd_cards_soup():
-    with open("tests/fixtures/yandex/prd_cards_err.html", "r") as f:
+    with open("tests/fixtures/yandex/prd_cards.html", "r") as f:
         soup = BeautifulSoup(f, "html.parser")
 
     return soup, soup.find("div", class_="bad")
 
 
-def test_get_prd_cards_err(prd_cards_soup):
-    right_test, err_test = get_product_cards(prd_cards_soup[0]), prd_cards_soup[1]
+def test_get_prd_cards(prd_cards_soup):
+    right_test, err_test = (
+        get_product_cards(prd_cards_soup[0]),
+        prd_cards_soup[1],
+    )
     err_text = "не возващает правильный результат"
     assert len(right_test) == 2, err_text
 
@@ -81,7 +84,7 @@ def test_get_divs_with_data(divs_with_data_soup):
     none_test, recurs_test, class_test = divs_with_data_soup
 
     err_text = "не возващает None, когда надо"
-    assert get_divs_with_data(none_test) is None, err_text
+    assert isinstance(get_divs_with_data(none_test), NoneProduct), err_text
 
     err_text = (
         "возващает div внутри div-ов или data-apiary-widget-name не проверяется"

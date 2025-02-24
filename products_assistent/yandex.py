@@ -13,8 +13,8 @@ from products_assistent.db.work_with_db import (
 logger = logging.getLogger(__name__)
 
 # sony wh-1000xm4
-# # logitech g435
-# # playstation 5
+# logitech g435
+# playstation 5
 # PRODUCT = "sony wh-1000xm4"
 MARKET_NAME = "market.yandex.ru"
 

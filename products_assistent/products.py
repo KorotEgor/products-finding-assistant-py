@@ -6,6 +6,55 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class NoneProduct:
+    def find(self, *args, **kwargs):
+        return NoneProduct()
+
+    def div(self, *args, **kwargs):
+        return NoneProduct()
+
+    def a(self, *args, **kwargs):
+        return NoneProduct()
+
+    def span(self, *args, **kwargs):
+        return NoneProduct()
+
+    def string(self, *args, **kwargs):
+        return NoneProduct()
+
+    def find_all(self, *args, **kwargs):
+        return NoneProduct()
+
+    def split(self, *args, **kwargs):
+        return NoneProduct()
+
+    def get(self, *args, **kwargs):
+        return NoneProduct()
+
+    def __getitem__(self, key):
+        return NoneProduct()
+
+    def __int__(self, *args, **kwargs):
+        return NoneProduct()
+
+    def __float__(self, *args, **kwargs):
+        return NoneProduct()
+
+    def __add__(self, other):
+        return NoneProduct()
+
+
+class CheckString:
+    def __init__(self, string):
+        self.string = string
+
+    def join(self, sequence):
+        if isinstance(sequence, list):
+            return self.string.join(sequence)
+
+        return NoneProduct()
+
+
 @dataclass
 class Product:
     name: str
@@ -18,7 +67,7 @@ class Product:
 def get_divs_with_data(product_html):
     divs_data = product_html.div.article.div
     if divs_data.get("data-apiary-widget-name") == "@marketfront/EmptyIncut":
-        return None
+        return NoneProduct()
 
     return divs_data.div.div.div.find_all("div", recursive=False)
 
@@ -34,6 +83,13 @@ def get_name_and_rating(divs_data):
     rating = name_rating.find(
         "div", attrs={"data-baobab-name": "rating"}, recursive=False
     )
+
+    if rating is None:
+        rating = NoneProduct()
+
+    if name is None:
+        name = NoneProduct()
+
     return rating, name
 
 
@@ -51,7 +107,7 @@ def get_avg_grades(rating):
 
 def get_price(divs_data):
     return int(
-        "".join(
+        CheckString("").join(
             divs_data[2].div.div.div.a.div.div.span.span.span.string.split(),
         )
     )
@@ -63,24 +119,24 @@ def get_url(market_name, divs_data):
 
 def get_product_data(product_html, market_name):
     divs_data = get_divs_with_data(product_html)
-    if divs_data is None:
-        return None
 
     rating, name = get_name_and_rating(divs_data)
-    if rating is not None:
-        rating = get_rating_divs(rating)
+    rating = get_rating_divs(rating)
 
-        grades = get_grades(rating)
-        if grades == 0:
-            return None
+    grades = get_grades(rating)
 
-        avg_grade = get_avg_grades(rating)
-    else:
-        return None
+    avg_grade = get_avg_grades(rating)
 
     price = get_price(divs_data)
 
     url = get_url(market_name, divs_data)
+
+    if (
+        isinstance(name, NoneProduct)
+        or isinstance(url, NoneProduct)
+        or isinstance(price, NoneProduct)
+    ):
+        return None
 
     return Product(
         name=name,
@@ -157,7 +213,7 @@ def get_products_list(session, product_name, market_name):
     products = []
     for product_html in products_html:
         product = get_product_data(product_html, market_name)
-        if product is not None:
+        if isinstance(product, Product):
             products.append(product)
 
     return products
