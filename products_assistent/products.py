@@ -8,40 +8,40 @@ logger = logging.getLogger(__name__)
 
 class NoneProduct:
     def find(self, *args, **kwargs):
-        return NoneProduct()
+        return self
 
     def div(self, *args, **kwargs):
-        return NoneProduct()
+        return self
 
     def a(self, *args, **kwargs):
-        return NoneProduct()
+        return self
 
     def span(self, *args, **kwargs):
-        return NoneProduct()
+        return self
 
     def string(self, *args, **kwargs):
-        return NoneProduct()
+        return self
 
     def find_all(self, *args, **kwargs):
-        return NoneProduct()
+        return self
 
     def split(self, *args, **kwargs):
-        return NoneProduct()
+        return self
 
     def get(self, *args, **kwargs):
-        return NoneProduct()
+        return self
 
     def __getitem__(self, key):
-        return NoneProduct()
+        return self
 
     def __int__(self, *args, **kwargs):
-        return NoneProduct()
+        return self
 
     def __float__(self, *args, **kwargs):
-        return NoneProduct()
+        return self
 
     def __add__(self, other):
-        return NoneProduct()
+        return self
 
 
 class CheckString:
