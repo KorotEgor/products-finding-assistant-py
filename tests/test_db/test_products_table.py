@@ -20,15 +20,17 @@ def test_save_product(app):
         )
 
         err_text = "не верно вернул id запроса"
-        assert prds_repo.save_product(1, test_product) == 3, err_text
+        assert prds_repo.save_product(1, test_product) == 4, err_text
 
         err_text = "не сохранил запрос"
         assert db.execute(
             "SELECT COUNT(*) FROM products",
-        ).fetchone() == (3,), err_text
+        ).fetchone() == (4,), err_text
 
         err_text = "не выкинул DatabaseError"
-        assert isinstance(prds_repo.save_product(None, test_product), DatabaseError)
+        assert isinstance(
+            prds_repo.save_product(None, test_product), DatabaseError
+        )
 
 
 def test_get_dbproduct_by_req(app):
@@ -46,12 +48,28 @@ def test_get_dbproduct_by_req(app):
 
         err_text = "возвращает не None при запросе несуществующего продукта"
         assert prds_repo.get_dbproduct_by_req("None_req") is None, err_text
+
         # не понял как
         # err_text = "не выкинул DatabaseError"
         # assert isinstance(prds_repo.get_dbproduct_by_req(None), DatabaseError)
 
 
-# def test_get_diff_avg_price_by_prd_id(app):
-#     with app.app_context():
-#         db = get_db()
-#         prds_repo = products_table.ProductsRepo(db)
+def test_get_diff_avg_price_by_prd_id(app):
+    with app.app_context():
+        db = get_db()
+        prds_repo = products_table.ProductsRepo(db)
+
+        err_text = "не верно вернул результат функции"
+        assert prds_repo.get_diff_avg_price_by_prd_id("test_req1") == (
+            1,
+            1.5,
+        ), err_text
+
+        err_text = "возвращает не None при запросе несуществующего продукта"
+        assert prds_repo.get_diff_avg_price_by_prd_id("None_req") is None, err_text
+
+        # не понял как
+        # err_text = "не выкинул DatabaseError"
+        # assert isinstance(
+        #     prds_repo.get_diff_avg_price_by_prd_id(None), DatabaseError
+        # ), err_text

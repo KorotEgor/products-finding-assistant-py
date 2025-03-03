@@ -70,15 +70,19 @@ class ProductsRepo:
         try:
             cur = self.db.execute(
                 """
-                    SELECT MIN(prds.price), MAX(prds.price), AVG(prds.price)
-                    FROM products AS prds
-                    LEFT JOIN requests AS reqs
-                    ON prds.id = reqs.product_id
-                    WHERE reqs.request = ?
+                    SELECT MIN(prd.price), MAX(prd.price), AVG(prd.price)
+                    FROM products AS prd
+                    LEFT JOIN requests AS req
+                    ON prd.request_id = req.id
+                    WHERE req.request = ?
                 """,
                 (req,),
             )
             min_price, max_price, avg_price = cur.fetchone()
+
+            if min_price is None:
+                return None
+
         except DatabaseError as err:
             return err
 
