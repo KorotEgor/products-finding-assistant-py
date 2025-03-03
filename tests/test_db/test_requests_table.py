@@ -9,16 +9,16 @@ def test_save_request(app):
         db = get_db()
         reqs_repo = requests_table.RequestsRepo(db)
 
-        err_text = " не верно вернул id уже сохраненного запроса"
+        err_text = "не верно вернул id уже сохраненного запроса"
         assert reqs_repo.save_request("test_req1") == 1, err_text
 
         err_text = "не верно вернул id запроса"
-        assert reqs_repo.save_request("test_req2") == 2, err_text
+        assert reqs_repo.save_request("test_req3") == 3, err_text
 
         err_text = "не сохранил запрос"
         assert db.execute(
             "SELECT COUNT(*) FROM requests",
-        ).fetchone() == (2,), err_text
+        ).fetchone() == (3,), err_text
 
         err_text = "не выкинул DatabaseError"
         assert isinstance(reqs_repo.save_request(None), DatabaseError)
