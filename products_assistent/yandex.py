@@ -19,12 +19,16 @@ logger = logging.getLogger(__name__)
 MARKET_NAME = "market.yandex.ru"
 
 
+def is_today(dbproduct):
+    return datetime.today().day == dbproduct.date.day
+
+
 def get_product_data(product_req, products_repo, requests_repo):
     logging.basicConfig(level=logging.DEBUG)
 
     dbproduct = products_repo.get_dbproduct_by_req(product_req)
     if dbproduct is not None:
-        if datetime.today().day == dbproduct.date.day:
+        if is_today(dbproduct):
             logger.info("Сегодня это продукт уже искали:")
             diff_price, avg_price = products_repo.get_diff_avg_price_by_prd_id(
                 product_req,
