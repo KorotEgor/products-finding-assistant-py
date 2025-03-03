@@ -1,6 +1,7 @@
+from sqlite3 import DatabaseError
+
 from products_assistent.db import requests_table
 from products_assistent.db.conn_to_db import get_db
-
 
 
 def test_save_request(app):
@@ -18,3 +19,6 @@ def test_save_request(app):
         assert db.execute(
             "SELECT COUNT(*) FROM requests",
         ).fetchone() == (2,), err_text
+
+        err_text = "не выкинул DatabaseError"
+        assert isinstance(reqs_repo.save_request(None), DatabaseError)
