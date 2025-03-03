@@ -66,15 +66,17 @@ class ProductsRepo:
 
         return DBProduct(*product[:-1], product[-1])
 
-    def get_diff_avg_price_by_prd_id(self, prd_id):
+    def get_diff_avg_price_by_prd_id(self, req):
         try:
             cur = self.db.execute(
                 """
-                        SELECT MIN(price), MAX(price), AVG(price)
-                        FROM products
-                        WHERE id = ?
-                    """,
-                (prd_id,),
+                    SELECT MIN(prds.price), MAX(prds.price), AVG(prds.price)
+                    FROM products AS prds
+                    LEFT JOIN requests AS reqs
+                    ON prds.id = reqs.product_id
+                    WHERE reqs.request = ?
+                """,
+                (req,),
             )
             min_price, max_price, avg_price = cur.fetchone()
         except DatabaseError as err:

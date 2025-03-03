@@ -27,7 +27,7 @@ def get_product_data(product_req, products_repo, requests_repo):
         if datetime.today().day == dbproduct.date.day:
             logger.info("Сегодня это продукт уже искали:")
             diff_price, avg_price = products_repo.get_diff_avg_price_by_prd_id(
-                dbproduct.id,
+                product_req,
             )
             show_data.show_product(diff_price, avg_price, dbproduct)
             return (
@@ -78,7 +78,7 @@ def get_product_data(product_req, products_repo, requests_repo):
 
     logger.info("Товар добавлен в базу данных: ")
     diff_price, avg_price = products_repo.get_diff_avg_price_by_prd_id(
-        prd_id,
+        product_req,
     )
     show_data.show_product(
         diff_price,

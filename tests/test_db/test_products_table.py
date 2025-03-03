@@ -49,3 +49,9 @@ def test_get_dbproduct_by_req(app):
         # не понял как
         # err_text = "не выкинул DatabaseError"
         # assert isinstance(prds_repo.get_dbproduct_by_req(None), DatabaseError)
+
+
+# def test_get_diff_avg_price_by_prd_id(app):
+#     with app.app_context():
+#         db = get_db()
+#         prds_repo = products_table.ProductsRepo(db)
