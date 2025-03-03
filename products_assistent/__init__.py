@@ -8,9 +8,7 @@ logger = logging.getLogger(__name__)
 load_dotenv()
 
 
-# для тестов как параметр
-# test_config=None
-def create_app():
+def create_app(test_config=None):
     # создаем окружение
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
@@ -18,19 +16,14 @@ def create_app():
         DATABASE=os.path.join(app.instance_path, "products_assistent.sqlite"),
     )
 
-    # для тестов
-    # if test_config is not None:
-    #     app.config.from_mapping(test_config)
+    if test_config is not None:
+        app.config.from_mapping(test_config)
 
     # проверка есть ли окружение
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
-
-    @app.route("/hello")
-    def hello():
-        return "Hello, World!"
 
     from products_assistent.db import conn_to_db
 
