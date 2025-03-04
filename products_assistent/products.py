@@ -34,12 +34,6 @@ class NoneProduct:
     def __getitem__(self, key):
         return self
 
-    def __int__(self, *args, **kwargs):
-        return self
-
-    def __float__(self, *args, **kwargs):
-        return self
-
     def __add__(self, other):
         return self
 
@@ -98,10 +92,16 @@ def get_rating_divs(rating):
 
 
 def get_grades(rating):
+    if isinstance(rating, NoneProduct):
+        return rating
+
     return int(rating[1].string.split()[2])
 
 
 def get_avg_grades(rating):
+    if isinstance(rating, NoneProduct):
+        return rating
+
     return float(rating[0].string.split()[2])
 
 
@@ -114,6 +114,9 @@ def get_price(divs_data):
 
 
 def get_url(market_name, divs_data):
+    if isinstance(divs_data, NoneProduct):
+        return divs_data
+
     return "https://" + market_name + divs_data[4].a.get("href")
 
 

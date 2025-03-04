@@ -1,9 +1,11 @@
 import pytest
 from bs4 import BeautifulSoup
-import requests
 import responses
+# import requests
 
 from products_assistent.products import (
+    NoneProduct,
+    CheckString,
     get_product_cards,
     del_offer_feed_if_there_is,
     get_divs_with_data,
@@ -15,7 +17,53 @@ from products_assistent.products import (
     get_url,
     get_html_file,
 )
-from products_assistent.products import NoneProduct
+
+
+def test_none_product():
+    none_product = NoneProduct()
+    err_text = "не верно работает метод find"
+    assert none_product.find("test") is none_product, err_text
+
+    err_text = "не верно работает метод div"
+    assert none_product.div("test") is none_product, err_text
+
+    err_text = "не верно работает метод a"
+    assert none_product.a("test") is none_product, err_text
+
+    err_text = "не верно работает метод span"
+    assert none_product.span("test") is none_product, err_text
+
+    err_text = "не верно работает метод string"
+    assert none_product.string("test") is none_product, err_text
+
+    err_text = "не верно работает метод find_all"
+    assert none_product.find_all("test") is none_product, err_text
+
+    err_text = "не верно работает метод split"
+    assert none_product.split("test") is none_product, err_text
+
+    err_text = "не верно работает метод get"
+    assert none_product.get("test") is none_product, err_text
+
+    err_text = "не верно работает метод __getitem__"
+    assert none_product[123] is none_product, err_text
+
+    err_text = "не верно работает метод __add__"
+    assert none_product + none_product is none_product, err_text
+
+
+def test_check_string():
+    check_string = CheckString("test")
+
+    err_text = "не верно работает метод join с не list"
+    assert isinstance(check_string.join("test"), NoneProduct), err_text
+
+    err_text = "не верно работает метод join с list"
+    join_string = check_string.join(["1", "2"])
+    assert not isinstance(join_string, NoneProduct), err_text
+
+    err_text = "не верно возращает значение с аргументом типа list"
+    assert join_string == "1test2", err_text
 
 
 @pytest.fixture
@@ -148,6 +196,9 @@ def test_get_grades(grades_soup):
     err_text = "не верное получение оценок"
     assert grades == 1, err_text
 
+    err_text = "не верно работает с NoneProduct"
+    assert isinstance(get_grades(NoneProduct()), NoneProduct), err_text
+
 
 @pytest.fixture
 def avg_grades_soup():
@@ -165,6 +216,9 @@ def test_get_avg_grades(avg_grades_soup):
 
     err_text = "не верное получение средних оценок"
     assert avg_grades == 1.0, err_text
+
+    err_text = "не верно работает с NoneProduct"
+    assert isinstance(get_avg_grades(NoneProduct()), NoneProduct), err_text
 
 
 @pytest.fixture
