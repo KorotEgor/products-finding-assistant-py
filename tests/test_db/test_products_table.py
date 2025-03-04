@@ -49,9 +49,9 @@ def test_get_dbproduct_by_req(app):
         err_text = "возвращает не None при запросе несуществующего продукта"
         assert prds_repo.get_dbproduct_by_req("None_req") is None, err_text
 
-        # не понял как
-        # err_text = "не выкинул DatabaseError"
-        # assert isinstance(prds_repo.get_dbproduct_by_req(None), DatabaseError)
+        # не знаю как спровоцировать такое поведение
+        # with pytest.raises(DatabaseError):
+        #     prds_repo.get_dbproduct_by_req(None)
 
 
 def test_get_diff_avg_price_by_prd_id(app):
@@ -68,8 +68,6 @@ def test_get_diff_avg_price_by_prd_id(app):
         err_text = "возвращает не None при запросе несуществующего продукта"
         assert prds_repo.get_diff_avg_price_by_prd_id("None_req") is None, err_text
 
-        # не понял как
-        # err_text = "не выкинул DatabaseError"
-        # assert isinstance(
-        #     prds_repo.get_diff_avg_price_by_prd_id(None), DatabaseError
-        # ), err_text
+        # не знаю как спровоцировать такое поведение
+        # with pytest.raises(DatabaseError):
+        #     prds_repo.get_diff_avg_price_by_prd_id(None)

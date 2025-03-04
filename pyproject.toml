@@ -22,6 +22,7 @@ dev-dependencies = [
     "logging>=0.4.9.6",
     "pytest-cov>=6.0.0",
     "pytest>=8.3.4",
+    "responses>=0.25.6",
     "ruff>=0.9.1",
 ]
 

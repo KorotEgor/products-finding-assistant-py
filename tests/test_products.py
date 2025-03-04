@@ -1,5 +1,7 @@
 import pytest
 from bs4 import BeautifulSoup
+import requests
+import responses
 
 from products_assistent.products import (
     get_product_cards,
@@ -11,6 +13,7 @@ from products_assistent.products import (
     get_avg_grades,
     get_price,
     get_url,
+    get_html_file,
 )
 from products_assistent.products import NoneProduct
 
@@ -195,3 +198,44 @@ def test_get_url(url_soup):
 
     err_text = "не верный url"
     assert url == "https://right.right", err_text
+
+
+@pytest.fixture
+def get_test_html():
+    with open("tests/fixtures/yandex/test_html.html", "r") as f:
+        return f.read()
+
+
+@responses.activate
+def test_get_html_file(get_test_html):
+    test_html = get_test_html
+    responses.add(
+        responses.GET,
+        "https://test/search/?text=test%20first",
+        body=test_html,
+        status=200,
+    )
+    # не знаю как спровоцировать такое поведение
+    # with pytest.raises(requests.exceptions.RequestException):
+    #     resp = get_html_file(
+    #         product_name="",
+    #         market_name="",
+    #     )
+    resp = get_html_file(product_name="test first", market_name="test")
+
+    err_text = "вернул не BeautifulSoup"
+    assert isinstance(resp, BeautifulSoup), err_text
+
+    err_text = "вернул не верные данные с сайта"
+    assert resp == BeautifulSoup(test_html, "html.parser"), err_text
+
+    responses.add(
+        responses.GET,
+        "https://test/search/?text=test%20first",
+        body=test_html,
+        status=404,
+    )
+    resp = get_html_file()
+
+    err_text = "вернул не None при плохом коде ответа"
+    assert resp is None, err_text

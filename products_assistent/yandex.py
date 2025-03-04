@@ -20,6 +20,9 @@ MARKET_NAME = "market.yandex.ru"
 
 
 def is_today(dbproduct):
+    if dbproduct is None:
+        return False
+
     return datetime.today().day == dbproduct.date.day
 
 
@@ -27,20 +30,19 @@ def get_product_data(product_req, products_repo, requests_repo):
     logging.basicConfig(level=logging.DEBUG)
 
     dbproduct = products_repo.get_dbproduct_by_req(product_req)
-    if dbproduct is not None:
-        if is_today(dbproduct):
-            logger.info("Сегодня это продукт уже искали:")
-            diff_price, avg_price = products_repo.get_diff_avg_price_by_prd_id(
-                product_req,
-            )
-            show_data.show_product(diff_price, avg_price, dbproduct)
-            return (
-                "Продукт удачно найден",
-                "alert alert-success",
-                dbproduct,
-                diff_price,
-                avg_price,
-            )
+    if is_today(dbproduct):
+        logger.info("Сегодня это продукт уже искали:")
+        diff_price, avg_price = products_repo.get_diff_avg_price_by_prd_id(
+            product_req,
+        )
+        show_data.show_product(diff_price, avg_price, dbproduct)
+        return (
+            "Продукт удачно найден",
+            "alert alert-success",
+            dbproduct,
+            diff_price,
+            avg_price,
+        )
 
     with requests.Session() as s:
         products = get_products_list(s, product_req, MARKET_NAME)
@@ -48,20 +50,10 @@ def get_product_data(product_req, products_repo, requests_repo):
     if isinstance(products, Exception):
         return "Не корректный запрос", "alert alert-danger", "", "", ""
 
-    if products is None:
+    if products is None or len(products) == 0:
         logger.info("Нет похожих товаров в интернете")
         return (
             "Нет похожих товаров в интернете",
-            "alert alert-danger",
-            "",
-            "",
-            "",
-        )
-
-    if len(products) == 0:
-        logger.info("Нет сильно отличающихся вариантов")
-        return (
-            "Нет сильно отличающихся вариантов",
             "alert alert-danger",
             "",
             "",

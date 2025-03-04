@@ -39,3 +39,6 @@ def test_is_today():
     assert is_today(today_product) is True, err_text
     assert is_today(yesterday_product) is False, err_text
     assert is_today(tomorrow_product) is False, err_text
+
+    err_text = "вернул не False, при передаче None"
+    assert not is_today(None), err_text

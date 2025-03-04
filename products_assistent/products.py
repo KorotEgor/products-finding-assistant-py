@@ -167,7 +167,7 @@ def del_offer_feed_if_there_is(products_html):
     return products_html
 
 
-def get_html_file(session, product_name, market_name):
+def get_html_file(session=requests, product_name="", market_name=""):
     try:
         headers = {
             "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,"
