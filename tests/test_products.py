@@ -6,6 +6,7 @@ import responses
 from products_assistent.products import (
     NoneProduct,
     CheckString,
+    Product,
     get_product_cards,
     del_offer_feed_if_there_is,
     get_divs_with_data,
@@ -15,6 +16,7 @@ from products_assistent.products import (
     get_avg_grades,
     get_price,
     get_url,
+    get_right_products,
     get_html_file,
 )
 
@@ -253,14 +255,49 @@ def url_soup():
     with open("tests/fixtures/yandex/url.html", "r") as f:
         soup = BeautifulSoup(f, "html.parser")
 
-    return 0, 0, 0, 0, soup
+    return (0, 0, 0, 0, soup), NoneProduct()
 
 
 def test_get_url(url_soup):
-    url = get_url("right.", url_soup)
+    none_url, url = url_soup[-1], get_url("right.", *url_soup[:-1])
 
     err_text = "не верный url"
     assert url == "https://right.right", err_text
+
+    err_text = "не возвращает NoneProduct при отсутствии url"
+    assert none_url is url_soup[-1], err_text
+
+
+@pytest.fixture
+def test_get_right_products():
+    return (
+        Product(
+            name="right",
+            url="https://right.right",
+            price=1234,
+            avg_grade=1.0,
+            num_of_grades=1,
+        ),
+        NoneProduct(),
+        None,
+        [],
+        "",
+    )
+
+
+def fake_prd_data(product_html, market_name):
+    return product_html
+
+
+def test_right_products(test_get_right_products):
+    testing_products = get_right_products(test_get_right_products, "yandex", get_prd_data=fake_prd_data)
+    right_product = test_get_right_products[0]
+
+    err_text = "не верное количество возвращаемых продуктов"
+    assert len(testing_products) == 1, err_text
+
+    err_text = "не верный возвращаемых продукт"
+    assert testing_products[0] is right_product, err_text
 
 
 @pytest.fixture

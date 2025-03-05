@@ -202,6 +202,18 @@ def get_html_file(session=requests, product_name="", market_name=""):
     return BeautifulSoup(response.text, "html.parser")
 
 
+def get_right_products(
+    products_html, market_name, get_prd_data=get_product_data
+):
+    products = []
+    for product_html in products_html:
+        product = get_prd_data(product_html, market_name)
+        if isinstance(product, Product):
+            products.append(product)
+
+    return products
+
+
 def get_products_list(session, product_name, market_name):
     soup = get_html_file(session, product_name, market_name)
 
@@ -213,10 +225,4 @@ def get_products_list(session, product_name, market_name):
 
     products_html = del_offer_feed_if_there_is(products_and_offers_html)
 
-    products = []
-    for product_html in products_html:
-        product = get_product_data(product_html, market_name)
-        if isinstance(product, Product):
-            products.append(product)
-
-    return products
+    return get_right_products(products_html, market_name)
