@@ -120,6 +120,19 @@ def get_url(market_name, divs_data):
     return "https://" + market_name + divs_data[4].a.get("href")
 
 
+def create_product(name, url, price, avg_grade, num_of_grades):
+    if type(NoneProduct()) in tuple(map(type, [name, url, price])):
+        return None
+
+    return Product(
+        name=name,
+        url=url,
+        price=price,
+        avg_grade=avg_grade,
+        num_of_grades=num_of_grades,
+    )
+
+
 def get_product_data(product_html, market_name):
     divs_data = get_divs_with_data(product_html)
 
@@ -134,20 +147,7 @@ def get_product_data(product_html, market_name):
 
     url = get_url(market_name, divs_data)
 
-    if (
-        isinstance(name, NoneProduct)
-        or isinstance(url, NoneProduct)
-        or isinstance(price, NoneProduct)
-    ):
-        return None
-
-    return Product(
-        name=name,
-        url=url,
-        price=price,
-        avg_grade=avg_grade,
-        num_of_grades=grades,
-    )
+    return create_product(name, url, price, avg_grade, grades)
 
 
 def get_product_cards(soup):

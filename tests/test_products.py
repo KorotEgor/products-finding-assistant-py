@@ -16,6 +16,7 @@ from products_assistent.products import (
     get_avg_grades,
     get_price,
     get_url,
+    create_product,
     get_right_products,
     get_html_file,
 )
@@ -269,6 +270,32 @@ def test_get_url(url_soup):
 
 
 @pytest.fixture
+def get_attrs_for_prd():
+    right_prd = ["right" for _ in range(5)]
+    wrong_prds = []
+    for i in range(3):
+        wrong_prds.append(right_prd[:i] + [NoneProduct()] + right_prd[i + 1 :])
+
+    return right_prd, *wrong_prds
+
+
+def test_create_product(get_attrs_for_prd):
+    right_prd, wrong_name_prd, wrong_url_prd, wrong_price_prd = get_attrs_for_prd
+
+    err_text = "не верно создает продукт, когда все верно"
+    assert Product(*right_prd) == create_product(*right_prd), err_text
+
+    err_text = "не верно создает продукт, когда не верное имя"
+    assert create_product(*wrong_name_prd) is None, err_text
+
+    err_text = "не верно создает продукт, когда не верный url"
+    assert create_product(*wrong_url_prd) is None, err_text
+
+    err_text = "не верно создает продукт, когда не верная цена "
+    assert create_product(*wrong_price_prd) is None, err_text
+
+
+@pytest.fixture
 def test_get_right_products():
     return (
         Product(
@@ -290,7 +317,9 @@ def fake_prd_data(product_html, market_name):
 
 
 def test_right_products(test_get_right_products):
-    testing_products = get_right_products(test_get_right_products, "yandex", get_prd_data=fake_prd_data)
+    testing_products = get_right_products(
+        test_get_right_products, "yandex", get_prd_data=fake_prd_data
+    )
     right_product = test_get_right_products[0]
 
     err_text = "не верное количество возвращаемых продуктов"
