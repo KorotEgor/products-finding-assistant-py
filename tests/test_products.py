@@ -151,17 +151,26 @@ def name_and_rating_soup():
     with open("tests/fixtures/yandex/name_and_rating.html", "r") as f:
         soup = BeautifulSoup(f, "html.parser")
 
-    return (0, soup)
+    right_soup, wrong_soup = soup.find_all("div", recursive=False)
+    return (0, right_soup), (0, wrong_soup)
 
 
 def test_get_name_and_rating(name_and_rating_soup):
-    raiting, name = get_name_and_rating(name_and_rating_soup)
+    right_soup, wrong_soup = name_and_rating_soup
 
+    right_name, right_rating = get_name_and_rating(right_soup)
     err_text = "неверное имя"
-    assert name == "right", err_text
+    assert right_name == "right", err_text
 
     err_text = "неверный рейтинг"
-    assert raiting.string == "right", err_text
+    assert right_rating.string == "right", err_text
+
+    wrong_name, wrong_rating = get_name_and_rating(wrong_soup)
+    err_text = "не верно передает при отсутствии рейтинга имени"
+    assert isinstance(wrong_name, NoneProduct), err_text
+
+    err_text = "не верно передает при отсутствии рейтинга"
+    assert isinstance(wrong_rating, NoneProduct), err_text
 
 
 @pytest.fixture

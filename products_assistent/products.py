@@ -84,7 +84,7 @@ def get_name_and_rating(divs_data):
     if name is None:
         name = NoneProduct()
 
-    return rating, name
+    return name, rating
 
 
 def get_rating_divs(rating):
