@@ -17,6 +17,7 @@ def app():
     app = create_app({
         'TESTING': True,
         'DATABASE': db_path,
+        "SECRET_KEY": "test_key",
     })
 
     with app.app_context():
