@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import tempfile
 
 import pytest
@@ -26,6 +27,7 @@ def app():
 
     yield app
 
+    # Path
     os.close(db_fd)
     os.unlink(db_path)
 

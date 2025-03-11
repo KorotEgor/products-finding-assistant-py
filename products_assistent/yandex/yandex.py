@@ -3,9 +3,9 @@ import logging
 from datetime import datetime
 
 from products_assistent.config import PRODUCT_COUNT
-from products_assistent.products import get_products_list
-from products_assistent.choice_alg import get_leaderboard
-from products_assistent import show_data
+from products_assistent.yandex.products import get_products_list
+from products_assistent.yandex.choice_alg import get_leaderboard
+from products_assistent.yandex import show_data
 from products_assistent.db.work_with_db import (
     manage_to_save_to_db,
 )

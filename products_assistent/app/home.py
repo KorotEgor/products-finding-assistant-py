@@ -9,7 +9,7 @@ bp = Blueprint("main", __name__)
 
 
 @bp.route("/", methods=("GET", "POST"))
-def home_view():
+def home():
     product, diff_price, avg_price = "first", "", ""
     if request.method == "POST":
         product_req = request.form["product_req"]

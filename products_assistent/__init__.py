@@ -29,7 +29,11 @@ def create_app(test_config=None):
 
     conn_to_db.init_app(app)
 
-    from products_assistent.app import bp
+    from products_assistent.app.home import bp
+
+    app.register_blueprint(bp)
+
+    from products_assistent.app.auth import bp
 
     app.register_blueprint(bp)
 

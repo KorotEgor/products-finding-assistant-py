@@ -1,6 +1,6 @@
 import datetime
 
-from products_assistent.yandex import is_today
+from products_assistent.yandex.yandex import is_today
 from products_assistent.db.products_table import DBProduct
 
 

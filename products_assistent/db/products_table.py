@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from sqlite3 import DatabaseError
 
-from products_assistent import products
+from products_assistent.yandex import products
 
 
 @dataclass

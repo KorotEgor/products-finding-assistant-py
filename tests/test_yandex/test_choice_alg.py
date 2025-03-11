@@ -1,8 +1,8 @@
 import pytest
 import random
 
-from products_assistent.choice_alg import get_leaderboard
-from products_assistent.products import Product
+from products_assistent.yandex.choice_alg import get_leaderboard
+from products_assistent.yandex.products import Product
 
 _TEST_PRD_COUNT = 4
 

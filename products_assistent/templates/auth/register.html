@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Register{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container wrapper flex-grow-1">
+  <h1>Регистрация</h1>
+  <form method="post">
+    <div class="form-group p-2">
+      <label for="username">Имя</label>
+      <input name="username" type="username" class="form-control" id="userInputName" placeholder="Ваше имя">
+    </div>
+
+    <div class="form-group p-2">
+      <label for="exampleInputEmail1">Почта</label>
+      <input name="email" type="email" class="form-control" id="userInputEmail" placeholder="Ваша почта">
+    </div>
+
+    <div class="form-group p-2">
+      <label for="exampleInputPassword1">Пароль</label>
+      <input name="password" type="password" class="form-control" id="userInputPassword" placeholder="Ваш пароль">
+    </div>
+
+    <div class="p-2">
+      <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

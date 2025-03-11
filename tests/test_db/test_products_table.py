@@ -1,7 +1,7 @@
 # import pytest
 from sqlite3 import DatabaseError
 
-from products_assistent import products
+from products_assistent.yandex import products
 from products_assistent.db import products_table
 from products_assistent.db.conn_to_db import get_db
 

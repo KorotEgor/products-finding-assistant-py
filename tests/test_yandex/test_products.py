@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import responses
 # import requests
 
-from products_assistent.products import (
+from products_assistent.yandex.products import (
     NoneProduct,
     CheckString,
     Product,
