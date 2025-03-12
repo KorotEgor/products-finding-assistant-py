@@ -1,21 +1,27 @@
+from dataclasses import dataclass
 from flask import (
     Blueprint,
     flash,
-    # g,
     redirect,
     render_template,
     request,
-    # session,
     url_for,
 )
 from sqlite3 import DatabaseError
 import logging
 
+from products_assistent.app.utils import check_username, check_email, check_password
 from products_assistent.db.conn_to_db import get_db
 from products_assistent.db import users_table
 
 logger = logging.getLogger(__name__)
 bp = Blueprint("auth", __name__, url_prefix="/auth")
+
+@dataclass
+class FieldsFormErrs:
+    username: list
+    email: list
+    password: list
 
 
 @bp.route("/register", methods=["GET", "POST"])
@@ -24,18 +30,18 @@ def register():
         username = request.form["username"]
         email = request.form["email"]
         password = request.form["password"]
-        errors = []
 
-        if not username:
-            errors += ["Имя - обязательное поле"]
-        elif not email:
-            errors += ["Почта - обязательное поле"]
-        elif not password:
-            errors += ["Пароль - обязательное поле"]
-
-        if errors:
-            flash(*errors, "alert alert-warning")
-            return redirect(url_for("auth.register"))
+        fields_errs = FieldsFormErrs(
+            username=check_username(username),
+            email=check_email(email),
+            password=check_password(password),
+        )
+        if fields_errs.username or fields_errs.email or fields_errs.password:
+            flash("Не вернго заполнены поля", "alert alert-warning")
+            return render_template(
+                'auth/register.html',
+                fields_errs=fields_errs,
+            )
 
         users_repo = users_table.UsersRepo(get_db())
 
@@ -59,4 +65,11 @@ def register():
             logger.error(err)
             flash(err, "alert alert-danger")
 
-    return render_template("auth/register.html")
+    return render_template(
+        'auth/register.html',
+        fields_errs=FieldsFormErrs(
+            username=[],
+            email=[],
+            password=[],
+        ),
+    )
