@@ -10,12 +10,17 @@ from flask import (
 from sqlite3 import DatabaseError
 import logging
 
-from products_assistent.app.utils import check_username, check_email, check_password
+from products_assistent.app.utils import (
+    check_username,
+    check_email,
+    check_password,
+)
 from products_assistent.db.conn_to_db import get_db
 from products_assistent.db import users_table
 
 logger = logging.getLogger(__name__)
 bp = Blueprint("auth", __name__, url_prefix="/auth")
+
 
 @dataclass
 class FieldsFormErrs:
@@ -39,7 +44,7 @@ def register():
         if fields_errs.username or fields_errs.email or fields_errs.password:
             flash("Не вернго заполнены поля", "alert alert-warning")
             return render_template(
-                'auth/register.html',
+                "auth/register.html",
                 fields_errs=fields_errs,
             )
 
@@ -66,7 +71,7 @@ def register():
             flash(err, "alert alert-danger")
 
     return render_template(
-        'auth/register.html',
+        "auth/register.html",
         fields_errs=FieldsFormErrs(
             username=[],
             email=[],
