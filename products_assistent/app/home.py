@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, flash
 
-from products_assistent import yandex
+from products_assistent.yandex import yandex
 from products_assistent.db import products_table
 from products_assistent.db import requests_table
 from products_assistent.db import conn_to_db
