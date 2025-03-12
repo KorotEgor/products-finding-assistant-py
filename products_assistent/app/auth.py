@@ -24,6 +24,18 @@ def register():
         username = request.form["username"]
         email = request.form["email"]
         password = request.form["password"]
+        errors = []
+
+        if not username:
+            errors += ["Имя - обязательное поле"]
+        elif not email:
+            errors += ["Почта - обязательное поле"]
+        elif not password:
+            errors += ["Пароль - обязательное поле"]
+
+        if errors:
+            flash(*errors, "alert alert-warning")
+            return redirect(url_for("auth.register"))
 
         users_repo = users_table.UsersRepo(get_db())
 

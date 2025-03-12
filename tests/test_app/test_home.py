@@ -1,4 +1,4 @@
-def test_home(client, app):
+def test_home(client):
     err_test = "статус кода не равен 200"
     assert client.get("/").status_code == 200, err_test
 
