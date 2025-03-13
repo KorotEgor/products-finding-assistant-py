@@ -1,40 +1,41 @@
 def check_username(username):
-    errs = []
     if not username:
-        errs += ["Это обязательное поле"]
+        return ["Это обязательное поле"]
 
-    return errs
+    return []
 
 
 def check_email(email):
     errs = []
     if not email:
-        errs += ["Это обязательное поле"]
-    elif "@" not in email:
+        return ["Это обязательное поле"]
+
+    if "@" not in email:
         errs += ['В почте должен быть символ "@"']
-    elif "." not in email and "@." not in email and email[-1] != ".":
+    if "." not in email or "@." in email or email[-1] == ".":
         errs += [
-            'В почте должен быть символ ".", но он не должен идти после "@" и быть последним'
+            'В почте должен быть символ ".", но он не должен идти после "@" и быть последним',
         ]
-    elif email.upper().isupper():
-        errs += 'Почта должна содержать еще символы, кроме "@" и "."'
+    if not (email.upper().isupper() or email.isdigit()):
+        errs += ['Почта должна содержать еще символы, кроме "@" и "."']
 
     return errs
 
 
 def check_password(password):
-    errs = []
     if not password:
-        errs += ["Это обязательное поле"]
-    elif password.isdigit():
-        errs += ["В пароле должны быть цифры"]
-    elif len(password) < 8:
+        return ["Это обязательное поле"]
+
+    errs = []
+    if len(password) < 8:
         errs += ["Длина пароля должна быть больше или равна 8"]
-    elif password.isupper():
+    if not any(sym.isdigit() for sym in password):
+        errs += ["В пароле должны быть цифры"]
+    if not any(sym.isupper() for sym in password):
         errs += ["В пароле должны быть большие буквы"]
-    elif password.islower():
+    if not any(sym.islower() for sym in password):
         errs += ["В пароле должны быть маленькие буквы"]
-    elif password.isalnum():
+    if not any(sym.isalnum() for sym in password):
         errs += ["В пароле должны быть специальные символы"]
 
     return errs
