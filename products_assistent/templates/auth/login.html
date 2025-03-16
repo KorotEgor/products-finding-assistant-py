@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Login{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div class="container wrapper flex-grow-1">
+  <h1>Вход</h1>
+  <form method="post">
+
+    <div class="form-group p-2">
+      <label for="userInputEmail">Почта</label>
+      <input name="email" type="email" class="form-control" id="userInputEmail" aria-describedby="emailErrors" placeholder="Ваша почта">
+      {% if fields_errs.email %}
+        <ul>
+          {% for err in fields_errs.email %}
+            <li class="text-danger">
+              <small id="emailErrors" class="form-text text-danger">{{ err }}</small>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    <div class="form-group p-2">
+      <label for="userInputPassword">Пароль</label>
+      <input name="password" type="password" class="form-control" id="userInputPassword" aria-describedby="passwordErrors" placeholder="Ваш пароль">
+      {% if fields_errs.password %}
+        <ul>
+          {% for err in fields_errs.password %}
+            <li class="text-danger">
+              <small id="passwordErrors" class="form-text text-danger">{{ err }}</small>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    </div>
+
+    <div class="p-2">
+      <button type="submit" class="btn btn-primary">Войти</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

@@ -40,6 +40,25 @@ class UsersRepo:
                 return None
 
         except DatabaseError as err:
-            return f"Ошибка при получении пользователя: {err}"
+            return err
+
+        return user
+
+    def get_user_by_id(self, id):
+        try:
+            cur = self.db.execute(
+                """
+                    SELECT *
+                    FROM users
+                    WHERE id = ?
+                """,
+                (id,),
+            )
+            user = cur.fetchone()
+            if user is None:
+                return None
+
+        except DatabaseError as err:
+            return err
 
         return user
