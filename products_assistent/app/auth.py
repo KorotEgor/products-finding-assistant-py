@@ -158,4 +158,5 @@ def login():
 @bp.route("/logout")
 def logout():
     session.clear()
+    flash("Успешный выход из системы", "alert alert-success")
     return redirect(url_for("main.home"))

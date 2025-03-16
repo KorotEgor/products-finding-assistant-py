@@ -13,7 +13,26 @@
       <ul class="nav navbar-nav">
         {% if g.user %}
           <li class="nav-item">
-            <a class="nav-link" href="{{ url_for('auth.logout') }}">Выход</a>
+            <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal">
+              Выйти
+            </button>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Подтверждение выхода</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                  </div>
+                  <div class="modal-body">Вы уверены, что хотите выйти?</div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-danger">
+                      <a class="text-white" href="{{ url_for('auth.logout') }}" style="text-decoration: none;">Выйти</a>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </li>
         {% else %}
           <li class="nav-item">
