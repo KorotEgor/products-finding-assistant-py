@@ -6,8 +6,8 @@ import pytest
 from products_assistent import create_app
 from products_assistent.db.conn_to_db import get_db, init_db
 
-with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
-    _data_sql = f.read().decode('utf8')
+with open(os.path.join(os.path.dirname(__file__), "data.sql"), "rb") as f:
+    _data_sql = f.read().decode("utf8")
 
 
 # создает временный файл базы данных
@@ -15,11 +15,13 @@ with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
 def app():
     db_fd, db_path = tempfile.mkstemp()
 
-    app = create_app({
-        'TESTING': True,
-        'DATABASE': db_path,
-        "SECRET_KEY": "test_key",
-    })
+    app = create_app(
+        {
+            "TESTING": True,
+            "DATABASE": db_path,
+            "SECRET_KEY": "test_key",
+        }
+    )
 
     with app.app_context():
         init_db()
@@ -50,7 +52,7 @@ class RequestActions(object):
 
     def post_req(self, product_req="test_user_req"):
         return self._client.post(
-            '/',
+            "/",
             data={"product_req": product_req},
         )
 
@@ -58,3 +60,28 @@ class RequestActions(object):
 @pytest.fixture
 def req(client):
     return RequestActions(client)
+
+
+class AuthActions(object):
+    def __init__(self, client):
+        self._client = client
+
+    def login(
+        self, username="test", email="test@test.test", password="Test123!"
+    ):
+        return self._client.post(
+            "/auth/login",
+            data={
+                "username": username,
+                "email": email,
+                "password": password,
+            },
+        )
+
+    def logout(self):
+        return self._client.get("/auth/logout")
+
+
+@pytest.fixture
+def auth(client):
+    return AuthActions(client)

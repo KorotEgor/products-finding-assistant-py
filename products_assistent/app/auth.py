@@ -131,7 +131,7 @@ def login():
                 f"Пользователя с почтой {email} не существует",
                 "alert alert-warning",
             )
-            return redirect(url_for("auth.login"))
+            return redirect(url_for("auth.register"))
 
         if not check_password_hash(user[3], password):
             flash(
