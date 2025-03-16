@@ -33,3 +33,18 @@ def test_get_user_by_email(app):
             "test_email@gmail.com",
             "Test_pass123!",
         )
+
+
+def test_get_user_by_id(app):
+    with app.app_context():
+        db = get_db()
+        reqs_repo = users_table.UsersRepo(db)
+
+        assert reqs_repo.get_user_by_id(2) is None
+
+        assert reqs_repo.get_user_by_id(1)[:-2] == (
+            1,
+            "test_name",
+            "test_email@gmail.com",
+            "Test_pass123!",
+        )
