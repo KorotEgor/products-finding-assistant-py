@@ -13,19 +13,55 @@
       <ul class="nav navbar-nav">
         {% if g.user %}
           <li class="nav-item">
-            <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#exampleModal">
-              Выйти
+            <button type="button" class="nav-link" data-bs-toggle="modal" data-bs-target="#usercardModal">
+              <img src="{{ g.user.photo }}" width="20" height="20" alt=""><span style="margin-left: 3px;">Профиль</span>
             </button>
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+            <div class="modal fade" id="usercardModal" tabindex="-1" aria-labelledby="usercardModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Подтверждение выхода</h5>
+                    <h5 class="modal-title" id="usercardModalLabel"><img src="{{ g.user.photo }}" width="30" height="30" alt=""><span style="margin-left: 10px;">Профиль</span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                  </div>
+                  <div class="modal-body">
+                    <h6>ID:</h6>
+                    <p>{{ g.user.id }}</p>
+
+                    <h6>Имя:</h6>
+                    <p>{{ g.user.name }}</p>
+
+                    <h6>Почта:</h6>
+                    <p>{{ g.user.email }}</p>
+
+                    <small class="text-secondary">Последний раз обновлялся: {{ g.user.updated_at }}</small>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary">
+                      <a class="text-white" href="{{ url_for('user.profile', id=g.user.id) }}" style="text-decoration: none;">Изменить профиль</a>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+
+          <li class="nav-item">
+            <button type="button" class="nav-link text-danger" data-bs-toggle="modal" data-bs-target="#exitModal">
+              Выйти
+            </button>
+
+            <div class="modal fade" id="exitModal" tabindex="-1" aria-labelledby="exitModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exitModalLabel">Подтверждение выхода</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                   </div>
                   <div class="modal-body">Вы уверены, что хотите выйти?</div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Закрыть</button>
                     <button type="button" class="btn btn-danger">
                       <a class="text-white" href="{{ url_for('auth.logout') }}" style="text-decoration: none;">Выйти</a>
                     </button>

@@ -1,4 +1,3 @@
-from dataclasses import dataclass
 from flask import (
     Blueprint,
     flash,
@@ -17,19 +16,13 @@ from products_assistent.app.utils import (
     check_username,
     check_email,
     check_password,
+    FieldsFormErrs,
 )
 from products_assistent.db.conn_to_db import get_db
 from products_assistent.db import users_table
 
 logger = logging.getLogger(__name__)
 bp = Blueprint("auth", __name__, url_prefix="/auth")
-
-
-@dataclass
-class FieldsFormErrs:
-    username: list
-    email: list
-    password: list
 
 
 @bp.before_app_request
@@ -41,11 +34,11 @@ def load_logged_in_user():
     else:
         users_repo = users_table.UsersRepo(get_db())
 
-        user = users_repo.get_user_by_email(user_id)
+        user = users_repo.get_user_by_id(user_id)
         if isinstance(user, DatabaseError):
             logger.error(f"Ошибка при получении пользователя: {user}")
         else:
-            g.user = lambda: user
+            g.user = user
 
 
 @bp.route("/register", methods=["GET", "POST"])
@@ -54,11 +47,18 @@ def register():
         username = request.form["username"]
         email = request.form["email"]
         password = request.form["password"]
+        access_password = request.form["access_password"]
+        print(access_password)
+
+        if password != access_password:
+            flash("Пароли не совпадают", "alert alert-warning")
+            return redirect(url_for("auth.register"))
 
         fields_errs = FieldsFormErrs(
             username=check_username(username),
             email=check_email(email),
             password=check_password(password),
+            access_password=check_password(access_password),
         )
 
         if fields_errs.username or fields_errs.email or fields_errs.password:
@@ -96,6 +96,7 @@ def register():
             username=[],
             email=[],
             password=[],
+            access_password=[],
         ),
     )
 
@@ -110,6 +111,7 @@ def login():
             username=[],
             email=check_email(email),
             password=check_password(password),
+            access_password=[],
         )
 
         if fields_errs.username or fields_errs.email or fields_errs.password:
@@ -133,7 +135,7 @@ def login():
             )
             return redirect(url_for("auth.register"))
 
-        if not check_password_hash(user[3], password):
+        if not check_password_hash(user.password, password):
             flash(
                 "Неверный пароль",
                 "alert alert-warning",
@@ -141,7 +143,7 @@ def login():
             return redirect(url_for("auth.login"))
         else:
             session.clear()
-            session["user_id"] = user[0]
+            session["user_id"] = user.id
             flash("Успешный вход в систему", "alert alert-success")
             return redirect(url_for("main.home"))
 
@@ -151,6 +153,7 @@ def login():
             username=[],
             email=[],
             password=[],
+            access_password=[],
         ),
     )
 

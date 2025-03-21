@@ -1,3 +1,14 @@
+from dataclasses import dataclass
+
+
+@dataclass
+class FieldsFormErrs:
+    username: list
+    email: list
+    password: list
+    access_password: list
+
+
 def check_username(username):
     if not username:
         return ["Это обязательное поле"]

@@ -37,4 +37,8 @@ def create_app(test_config=None):
 
     app.register_blueprint(bp)
 
+    from products_assistent.app.user import bp
+
+    app.register_blueprint(bp)
+
     return app

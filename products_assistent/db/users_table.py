@@ -1,5 +1,18 @@
+from dataclasses import dataclass
+from datetime import datetime
 from sqlite3 import DatabaseError
 from werkzeug.security import generate_password_hash
+
+
+@dataclass
+class User:
+    id: int
+    name: str
+    email: str
+    password: str
+    photo: str
+    created_at: datetime
+    updated_at: datetime
 
 
 class UsersRepo:
@@ -42,7 +55,7 @@ class UsersRepo:
         except DatabaseError as err:
             return err
 
-        return user
+        return User(*user)
 
     def get_user_by_id(self, id):
         try:
@@ -61,4 +74,4 @@ class UsersRepo:
         except DatabaseError as err:
             return err
 
-        return user
+        return User(*user)
